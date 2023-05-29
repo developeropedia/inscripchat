@@ -1,8 +1,14 @@
 
 
 // ===============================================reply conversation
-$(".reply-btn").click(function(){
-    $(".comment-input").removeClass("reply-input");
+$("body").on("click", ".reply-btn", function(){
+    if($(this).closest(".reply-text").length) {
+        $(this).closest(".reply-text").find(".reply-text-container").toggleClass("reply-input");
+        $(this).closest(".reply-text").find(".send-reply").toggleClass("d-none");
+    } else {
+        $(this).closest(".comment-text").find(".reply-text-container").toggleClass("reply-input");
+        $(this).closest(".comment-text").find(".send-reply").toggleClass("d-none");
+    }
   });
  
 // ==============================================messages notificatiob popups

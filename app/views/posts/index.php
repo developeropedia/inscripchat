@@ -61,7 +61,7 @@ if(!empty($posts)) {
                             </div>
                             <div class="d-flex justify-content-between px-1 ">
                                 <h2 class="second-heading py-1 ellipsis-1"><?php echo $imagePost->title; ?></h2>
-                                <h2 class="second-heading py-1 ellipsis-1"><?php echo formatViews($imagePost->views); ?> Views</h2>
+                                <h2 class="second-heading py-1 ellipsis-1"><?php echo formatStats($imagePost->views); ?> Views</h2>
                             </div>
                         </div>
                     <?php endif; ?>
@@ -87,7 +87,7 @@ if(!empty($posts)) {
                                 </div>
                                 <div class="d-flex justify-content-between align-items-center px-1 mb-2 mt-2">
                                     <h2 class="f-14 w-500  ellipsis-1 pt-0 mt-0"><?php echo $post->title; ?></h2>
-                                    <h2 class="f-12 w-500  pb-0 pt-0 mt-0 ellipsis-1"><?php echo formatViews($post->views); ?> Views</h2>
+                                    <h2 class="f-12 w-500  pb-0 pt-0 mt-0 ellipsis-1"><?php echo formatStats($post->views); ?> Views</h2>
                                 </div>
                             </div>
                         <?php endforeach; ?>
@@ -103,19 +103,19 @@ if(!empty($posts)) {
 
         <div class="fixed-btns">
             <button class="mb-2 " type="button" data-bs-toggle="modal" data-bs-target="#createGroup"><img
-                    src="assets/images/add-group.png" alt=""> Create Group</button>
+                    src="<?php echo URLROOT; ?>/public/images/add-group.png" alt=""> Create Group</button>
             <button class="mb-2" type="button" data-bs-toggle="modal" data-bs-target="#Groups"><img
-                    src="assets/images/group.png" alt="">Groups</button>
+                    src="<?php echo URLROOT; ?>/public/images/group.png" alt="">Groups</button>
             <button type="button" data-bs-toggle="modal" data-bs-target="#leaveGroup"><img
-                    src="assets/images/del-group.png" alt="">Leave Group</button>
+                    src="<?php echo URLROOT; ?>/public/images/del-group.png" alt="">Leave Group</button>
             <!-- <button class="mb-2 " type="button" data-bs-toggle="modal" data-bs-target="#addPeer"><img
-                    src="assets/images/user (1).png" alt="">Add Peer</button>
+                    src="<?php echo URLROOT; ?>/public/images/user (1).png" alt="">Add Peer</button>
             <button class="mb-2" type="button" data-bs-toggle="modal" data-bs-target="#deletePeer"><img
-                    src="assets/images/user (2).png" alt="">Remove Peer</button>
+                    src="<?php echo URLROOT; ?>/public/images/user (2).png" alt="">Remove Peer</button>
             <button class="mb-2 " type="button" data-bs-toggle="modal" data-bs-target="#createGroup"><img
-                    src="assets/images/add-group.png" alt=""> Create Group</button>
+                    src="<?php echo URLROOT; ?>/public/images/add-group.png" alt=""> Create Group</button>
             <button type="button" data-bs-toggle="modal" data-bs-target="#deleteGroup"><img
-                    src="assets/images/del-group.png" alt="">Delete Group</button> -->
+                    src="<?php echo URLROOT; ?>/public/images/del-group.png" alt="">Delete Group</button> -->
         </div>
     </main>
     <!-- <div class="contact-icon">
@@ -142,7 +142,7 @@ if(!empty($posts)) {
                     <a href="" class="no-decoration">
                         <div class="chat-notification mb-2">
                             <div class="chat-notification-img">
-                                <img src="assets/images/group.jpg" alt="">
+                                <img src="<?php echo URLROOT; ?>/public/images/group.jpg" alt="">
                             </div>
                             <div class="chat-notification-text  " style="width: 82%;">
                                 <div class="d-flex justify-content-between">
@@ -163,7 +163,7 @@ if(!empty($posts)) {
                     <a href="" class="no-decoration">
                         <div class="chat-notification mb-2">
                             <div class="chat-notification-img">
-                                <img src="assets/images/group.jpg" alt="">
+                                <img src="<?php echo URLROOT; ?>/public/images/group.jpg" alt="">
                             </div>
                             <div class="chat-notification-text  " style="width: 82%;">
                                 <div class="d-flex justify-content-between">
@@ -184,7 +184,7 @@ if(!empty($posts)) {
                     <a href="" class="no-decoration">
                         <div class="chat-notification mb-2">
                             <div class="chat-notification-img">
-                                <img src="assets/images/group.jpg" alt="">
+                                <img src="<?php echo URLROOT; ?>/public/images/group.jpg" alt="">
                             </div>
                             <div class="chat-notification-text  " style="width: 82%;">
                                 <div class="d-flex justify-content-between">
@@ -205,7 +205,7 @@ if(!empty($posts)) {
                     <a href="" class="no-decoration">
                         <div class="chat-notification mb-2">
                             <div class="chat-notification-img">
-                                <img src="assets/images/group.jpg" alt="">
+                                <img src="<?php echo URLROOT; ?>/public/images/group.jpg" alt="">
                             </div>
                             <div class="chat-notification-text  " style="width: 82%;">
                                 <div class="d-flex justify-content-between">
@@ -242,7 +242,7 @@ if(!empty($posts)) {
                 <div class="modal-body">
                     <div class="chat-notification align-items-center ">
                         <div class="chat-notification-img">
-                            <img src="assets/images/image 1.png" alt="">
+                            <img src="<?php echo URLROOT; ?>/public/images/image 1.png" alt="">
                         </div>
                         <div class="chat-notification-text bg-dange w-100">
                             <div class="ms-1 ps-0 d-flex justify-content-between form-check w-100">
@@ -256,7 +256,7 @@ if(!empty($posts)) {
                     </div>
                     <div class="chat-notification align-items-center">
                         <div class="chat-notification-img">
-                            <img src="assets/images/image 1.png" alt="">
+                            <img src="<?php echo URLROOT; ?>/public/images/image 1.png" alt="">
                         </div>
                         <div class="chat-notification-text w-100">
                             <div class="ms-1 ps-0 d-flex justify-content-between form-check w-100">
@@ -269,7 +269,7 @@ if(!empty($posts)) {
                     </div>
                     <div class="chat-notification align-items-center">
                         <div class="chat-notification-img">
-                            <img src="assets/images/image 1.png" alt="">
+                            <img src="<?php echo URLROOT; ?>/public/images/image 1.png" alt="">
                         </div>
                         <div class="chat-notification-text w-100">
                             <div class="ms-1 ps-0 d-flex justify-content-between form-check w-100">
@@ -282,7 +282,7 @@ if(!empty($posts)) {
                     </div>
                     <div class="chat-notification align-items-center">
                         <div class="chat-notification-img">
-                            <img src="assets/images/image 1.png" alt="">
+                            <img src="<?php echo URLROOT; ?>/public/images/image 1.png" alt="">
                         </div>
                         <div class="chat-notification-text w-100">
                             <div class="ms-1 ps-0 d-flex justify-content-between form-check w-100">
@@ -295,7 +295,7 @@ if(!empty($posts)) {
                     </div>
                     <div class="chat-notification align-items-center">
                         <div class="chat-notification-img">
-                            <img src="assets/images/image 1.png" alt="">
+                            <img src="<?php echo URLROOT; ?>/public/images/image 1.png" alt="">
                         </div>
                         <div class="chat-notification-text w-100">
                             <div class="ms-1 ps-0 d-flex justify-content-between form-check w-100">
@@ -308,7 +308,7 @@ if(!empty($posts)) {
                     </div>
                     <div class="chat-notification align-items-center">
                         <div class="chat-notification-img">
-                            <img src="assets/images/image 1.png" alt="">
+                            <img src="<?php echo URLROOT; ?>/public/images/image 1.png" alt="">
                         </div>
                         <div class="chat-notification-text w-100">
                             <div class="ms-1 ps-0 d-flex justify-content-between form-check w-100">
@@ -321,7 +321,7 @@ if(!empty($posts)) {
                     </div>
                     <div class="chat-notification align-items-center">
                         <div class="chat-notification-img">
-                            <img src="assets/images/image 1.png" alt="">
+                            <img src="<?php echo URLROOT; ?>/public/images/image 1.png" alt="">
                         </div>
                         <div class="chat-notification-text w-100">
                             <div class="ms-1 ps-0 d-flex justify-content-between form-check w-100">
@@ -334,7 +334,7 @@ if(!empty($posts)) {
                     </div>
                     <div class="chat-notification align-items-center">
                         <div class="chat-notification-img">
-                            <img src="assets/images/image 1.png" alt="">
+                            <img src="<?php echo URLROOT; ?>/public/images/image 1.png" alt="">
                         </div>
                         <div class="chat-notification-text w-100">
                             <div class="ms-1 ps-0 d-flex justify-content-between form-check w-100">
@@ -364,7 +364,7 @@ if(!empty($posts)) {
                 <div class="modal-body">
                     <div class="chat-notification align-items-center">
                         <div class="chat-notification-img">
-                            <img src="assets/images/image 1.png" alt="">
+                            <img src="<?php echo URLROOT; ?>/public/images/image 1.png" alt="">
                         </div>
                         <div class="chat-notification-text w-100">
                             <div class="ms-1 ps-0 d-flex justify-content-between form-check w-100">
@@ -378,7 +378,7 @@ if(!empty($posts)) {
                     </div>
                     <div class="chat-notification align-items-center">
                         <div class="chat-notification-img">
-                            <img src="assets/images/image 1.png" alt="">
+                            <img src="<?php echo URLROOT; ?>/public/images/image 1.png" alt="">
                         </div>
                         <div class="chat-notification-text w-100">
                             <div class="ms-1 ps-0 d-flex justify-content-between form-check w-100">
@@ -391,7 +391,7 @@ if(!empty($posts)) {
                     </div>
                     <div class="chat-notification align-items-center">
                         <div class="chat-notification-img">
-                            <img src="assets/images/image 1.png" alt="">
+                            <img src="<?php echo URLROOT; ?>/public/images/image 1.png" alt="">
                         </div>
                         <div class="chat-notification-text w-100">
                             <div class="ms-1 ps-0 d-flex justify-content-between form-check w-100">
@@ -404,7 +404,7 @@ if(!empty($posts)) {
                     </div>
                     <div class="chat-notification align-items-center">
                         <div class="chat-notification-img">
-                            <img src="assets/images/image 1.png" alt="">
+                            <img src="<?php echo URLROOT; ?>/public/images/image 1.png" alt="">
                         </div>
                         <div class="chat-notification-text w-100">
                             <div class="ms-1 ps-0 d-flex justify-content-between form-check w-100">
@@ -417,7 +417,7 @@ if(!empty($posts)) {
                     </div>
                     <div class="chat-notification align-items-center">
                         <div class="chat-notification-img">
-                            <img src="assets/images/image 1.png" alt="">
+                            <img src="<?php echo URLROOT; ?>/public/images/image 1.png" alt="">
                         </div>
                         <div class="chat-notification-text w-100">
                             <div class="ms-1 ps-0 d-flex justify-content-between form-check w-100">
@@ -430,7 +430,7 @@ if(!empty($posts)) {
                     </div>
                     <div class="chat-notification align-items-center">
                         <div class="chat-notification-img">
-                            <img src="assets/images/image 1.png" alt="">
+                            <img src="<?php echo URLROOT; ?>/public/images/image 1.png" alt="">
                         </div>
                         <div class="chat-notification-text w-100">
                             <div class="ms-1 ps-0 d-flex justify-content-between form-check w-100">
@@ -443,7 +443,7 @@ if(!empty($posts)) {
                     </div>
                     <div class="chat-notification align-items-center">
                         <div class="chat-notification-img">
-                            <img src="assets/images/image 1.png" alt="">
+                            <img src="<?php echo URLROOT; ?>/public/images/image 1.png" alt="">
                         </div>
                         <div class="chat-notification-text w-100">
                             <div class="ms-1 ps-0 d-flex justify-content-between form-check w-100">
@@ -456,7 +456,7 @@ if(!empty($posts)) {
                     </div>
                     <div class="chat-notification align-items-center">
                         <div class="chat-notification-img">
-                            <img src="assets/images/image 1.png" alt="">
+                            <img src="<?php echo URLROOT; ?>/public/images/image 1.png" alt="">
                         </div>
                         <div class="chat-notification-text w-100">
                             <div class="ms-1 ps-0 d-flex justify-content-between form-check w-100">
@@ -493,7 +493,7 @@ if(!empty($posts)) {
                     <p class="text-center second-heading">Add Peers to Your Group</p>
                     <div class="chat-notification align-items-center">
                         <div class="chat-notification-img">
-                            <img src="assets/images/image 1.png" alt="">
+                            <img src="<?php echo URLROOT; ?>/public/images/image 1.png" alt="">
                         </div>
                         <div class="chat-notification-text w-100">
                             <div class="ms-1 ps-0 d-flex justify-content-between form-check w-100">
@@ -507,7 +507,7 @@ if(!empty($posts)) {
                     </div>
                     <div class="chat-notification align-items-center">
                         <div class="chat-notification-img">
-                            <img src="assets/images/image 1.png" alt="">
+                            <img src="<?php echo URLROOT; ?>/public/images/image 1.png" alt="">
                         </div>
                         <div class="chat-notification-text w-100">
                             <div class="ms-1 ps-0 d-flex justify-content-between form-check w-100">
@@ -520,7 +520,7 @@ if(!empty($posts)) {
                     </div>
                     <div class="chat-notification align-items-center">
                         <div class="chat-notification-img">
-                            <img src="assets/images/image 1.png" alt="">
+                            <img src="<?php echo URLROOT; ?>/public/images/image 1.png" alt="">
                         </div>
                         <div class="chat-notification-text w-100">
                             <div class="ms-1 ps-0 d-flex justify-content-between form-check w-100">
@@ -533,7 +533,7 @@ if(!empty($posts)) {
                     </div>
                     <div class="chat-notification align-items-center">
                         <div class="chat-notification-img">
-                            <img src="assets/images/image 1.png" alt="">
+                            <img src="<?php echo URLROOT; ?>/public/images/image 1.png" alt="">
                         </div>
                         <div class="chat-notification-text w-100">
                             <div class="ms-1 ps-0 d-flex justify-content-between form-check w-100">
@@ -546,7 +546,7 @@ if(!empty($posts)) {
                     </div>
                     <div class="chat-notification align-items-center">
                         <div class="chat-notification-img">
-                            <img src="assets/images/image 1.png" alt="">
+                            <img src="<?php echo URLROOT; ?>/public/images/image 1.png" alt="">
                         </div>
                         <div class="chat-notification-text w-100">
                             <div class="ms-1 ps-0 d-flex justify-content-between form-check w-100">
@@ -559,7 +559,7 @@ if(!empty($posts)) {
                     </div>
                     <div class="chat-notification align-items-center">
                         <div class="chat-notification-img">
-                            <img src="assets/images/image 1.png" alt="">
+                            <img src="<?php echo URLROOT; ?>/public/images/image 1.png" alt="">
                         </div>
                         <div class="chat-notification-text w-100">
                             <div class="ms-1 ps-0 d-flex justify-content-between form-check w-100">
@@ -572,7 +572,7 @@ if(!empty($posts)) {
                     </div>
                     <div class="chat-notification align-items-center">
                         <div class="chat-notification-img">
-                            <img src="assets/images/image 1.png" alt="">
+                            <img src="<?php echo URLROOT; ?>/public/images/image 1.png" alt="">
                         </div>
                         <div class="chat-notification-text w-100">
                             <div class="ms-1 ps-0 d-flex justify-content-between form-check w-100">
@@ -585,7 +585,7 @@ if(!empty($posts)) {
                     </div>
                     <div class="chat-notification align-items-center">
                         <div class="chat-notification-img">
-                            <img src="assets/images/image 1.png" alt="">
+                            <img src="<?php echo URLROOT; ?>/public/images/image 1.png" alt="">
                         </div>
                         <div class="chat-notification-text w-100">
                             <div class="ms-1 ps-0 d-flex justify-content-between form-check w-100">
@@ -634,7 +634,7 @@ if(!empty($posts)) {
                 <div class="modal-body">
                     <div class="chat-notification align-items-center">
                         <div class="chat-notification-img">
-                            <img src="assets/images/image 1.png" alt="">
+                            <img src="<?php echo URLROOT; ?>/public/images/image 1.png" alt="">
                         </div>
                         <div class="chat-notification-text w-100">
                             <div class="ms-1 ps-0 d-flex justify-content-between form-check w-100">
@@ -648,7 +648,7 @@ if(!empty($posts)) {
                     </div>
                     <div class="chat-notification align-items-center">
                         <div class="chat-notification-img">
-                            <img src="assets/images/image 1.png" alt="">
+                            <img src="<?php echo URLROOT; ?>/public/images/image 1.png" alt="">
                         </div>
                         <div class="chat-notification-text w-100">
                             <div class="ms-1 ps-0 d-flex justify-content-between form-check w-100">
@@ -661,7 +661,7 @@ if(!empty($posts)) {
                     </div>
                     <div class="chat-notification align-items-center">
                         <div class="chat-notification-img">
-                            <img src="assets/images/image 1.png" alt="">
+                            <img src="<?php echo URLROOT; ?>/public/images/image 1.png" alt="">
                         </div>
                         <div class="chat-notification-text w-100">
                             <div class="ms-1 ps-0 d-flex justify-content-between form-check w-100">
@@ -674,7 +674,7 @@ if(!empty($posts)) {
                     </div>
                     <div class="chat-notification align-items-center">
                         <div class="chat-notification-img">
-                            <img src="assets/images/image 1.png" alt="">
+                            <img src="<?php echo URLROOT; ?>/public/images/image 1.png" alt="">
                         </div>
                         <div class="chat-notification-text w-100">
                             <div class="ms-1 ps-0 d-flex justify-content-between form-check w-100">
@@ -705,7 +705,7 @@ if(!empty($posts)) {
                 <div class="modal-body">
                     <div class="chat-notification align-items-center">
                         <div class="chat-notification-img">
-                            <img src="assets/images/image 1.png" alt="">
+                            <img src="<?php echo URLROOT; ?>/public/images/image 1.png" alt="">
                         </div>
                         <div class="chat-notification-text w-100">
                             <div class="ms-1 ps-0 d-flex justify-content-between form-check w-100">
@@ -719,7 +719,7 @@ if(!empty($posts)) {
                     </div>
                     <div class="chat-notification align-items-center">
                         <div class="chat-notification-img">
-                            <img src="assets/images/image 1.png" alt="">
+                            <img src="<?php echo URLROOT; ?>/public/images/image 1.png" alt="">
                         </div>
                         <div class="chat-notification-text w-100">
                             <div class="ms-1 ps-0 d-flex justify-content-between form-check w-100">
@@ -732,7 +732,7 @@ if(!empty($posts)) {
                     </div>
                     <div class="chat-notification align-items-center">
                         <div class="chat-notification-img">
-                            <img src="assets/images/image 1.png" alt="">
+                            <img src="<?php echo URLROOT; ?>/public/images/image 1.png" alt="">
                         </div>
                         <div class="chat-notification-text w-100">
                             <div class="ms-1 ps-0 d-flex justify-content-between form-check w-100">
@@ -745,7 +745,7 @@ if(!empty($posts)) {
                     </div>
                     <div class="chat-notification align-items-center">
                         <div class="chat-notification-img">
-                            <img src="assets/images/image 1.png" alt="">
+                            <img src="<?php echo URLROOT; ?>/public/images/image 1.png" alt="">
                         </div>
                         <div class="chat-notification-text w-100">
                             <div class="ms-1 ps-0 d-flex justify-content-between form-check w-100">
@@ -789,7 +789,7 @@ include APPROOT . "/views/inc/footer.php";
 
 <script>
     $(document).ready(function() {
-    var page = 2;
+    var page = 1;
     var isLoading = false;
 
     // Load initial posts
@@ -806,6 +806,19 @@ include APPROOT . "/views/inc/footer.php";
         }
     });
 
+    function formatStats(views) {
+        if (views >= 1000 && views < 1000000) {
+            return (views / 1000).toFixed(1) + 'K';
+        } else if (views >= 1000000 && views < 1000000000) {
+            return (views / 1000000).toFixed(1) + 'M';
+        } else if (views >= 1000000000) {
+            return (views / 1000000000).toFixed(1) + 'B';
+        } else {
+            return views;
+        }
+    }
+
+
     // Function to load posts via AJAX
     function loadPosts() {
         isLoading = true;
@@ -820,6 +833,7 @@ include APPROOT . "/views/inc/footer.php";
             data: { action: 'fetch_posts', page: page, author_id: adminID },
             dataType: 'html',
             success: function(response) {
+                // console.log(response);
                 response = JSON.parse(response);
 
                 if(response.posts) {
@@ -844,7 +858,7 @@ include APPROOT . "/views/inc/footer.php";
                                 </div>
                                 <div class="d-flex justify-content-between align-items-center px-1 mb-2 mt-2">
                                     <h2 class="f-14 w-500  ellipsis-1 pt-0 mt-0">${ post.title }</h2>
-                                    <h2 class="f-12 w-500  pb-0 pt-0 mt-0 ellipsis-1">${ post.views } Views</h2>
+                                    <h2 class="f-12 w-500  pb-0 pt-0 mt-0 ellipsis-1">${ formatStats(post.views) } Views</h2>
                                 </div>
                             </div>`);
                     })

@@ -2,7 +2,7 @@
     <header>
         <nav class="navbar navbar-expand navbar-light bg-light">
             <div class="container-fluid">
-                <a class="navbar-brand" href="index.html">
+                <a class="navbar-brand" href="<?php echo URLROOT; ?>/pages/index">
                     <img src="<?php echo URLROOT; ?>/public/images/logo.png" alt="" class=" navbar-logo">
                 </a>
 

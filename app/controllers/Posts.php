@@ -1,9 +1,11 @@
 <?php
   class Posts extends Controller {
     private $postsModel;
+    private $commentsModel;
 
     public function __construct(){
         $this->postsModel = $this->model("Post");
+        $this->commentsModel = $this->model("Comment");
     }
     
     public function index(){
@@ -14,10 +16,11 @@
 
     public function post($id)
     {
-      $post = $this->postsModel->getPostById($id);
-      $posts = $this->postsModel->getPosts();
+      $post = $this->postsModel->getPostById($id, true, $_SESSION['user_id']);
+      $posts = $this->postsModel->getPosts(0, true, 5);
+      $comments = $this->commentsModel->getPostComments($id);
 
-      $this->view("posts/post", ["title" => "InscripChat", "post" => $post, "posts" => $posts]);
+      $this->view("posts/post", ["title" => "InscripChat", "post" => $post, "posts" => $posts, "comments" => $comments]);
     }
 
     public function fetch()
@@ -25,7 +28,7 @@
       $action = $_POST['action'];
 
       if($action === "fetch_posts") {
-          $page = isset($_POST['page']) ? $_POST['page'] : 2;
+          $page = isset($_POST['page']) ? $_POST['page'] : 1;
           $author_id = isset($_POST['author_id']) ? $_POST['author_id'] : 0;
           $postsPerPage = POSTS_PER_PAGE;
           $offset = ($page - 1) * $postsPerPage;

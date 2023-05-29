@@ -76,7 +76,7 @@
 
     // Find User By ID
     public function getUserById($id){
-      $this->db->query("SELECT *, courses.name as course FROM users INNER JOIN courses ON courses.id = users.course WHERE users.id = :id");
+      $this->db->query("SELECT *, users.name as userName, courses.name as course FROM users INNER JOIN courses ON courses.id = users.course WHERE users.id = :id");
       $this->db->bind(':id', $id);
 
       $user = $this->db->single();

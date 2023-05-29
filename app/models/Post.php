@@ -15,7 +15,10 @@
       $qualification = QUALIFICATION[$currentUser->qualification];
       $institution = $currentUser->institution;
 
-      $query = "SELECT * FROM posts";
+      $query = "SELECT posts.*, COALESCE(pv.views, 0) AS views FROM posts 
+      LEFT JOIN (SELECT post_id, COUNT(*) AS views
+      FROM post_views
+      GROUP BY post_id) pv ON posts.id = pv.post_id";
       if($author_id !== 0) {
         $query .= " WHERE author_id = :author_id";
       }
@@ -39,12 +42,38 @@
     }
 
     // Get Post By ID 
-    public function getPostById($id){
-      $this->db->query("SELECT * FROM posts WHERE id = :id");
+    public function getPostById($id, $view = false, $user_id = 0){
+
+      if($view && $user_id !== 0) {
+        $this->incrementPostViews($id, $user_id);
+      }
+
+      $query = "SELECT posts.*, COALESCE(pv.views, 0) AS views FROM posts 
+      LEFT JOIN (SELECT post_id, COUNT(*) AS views
+      FROM post_views
+      GROUP BY post_id) pv ON posts.id = pv.post_id WHERE posts.id = :id";
+
+      $this->db->query($query);
       $this->db->bind(':id', $id);
 
       $post = $this->db->single();
 
       return $post;
+    }
+
+    public function incrementPostViews($post_id, $user_id)
+    {
+      $this->db->query("SELECT * FROM post_views WHERE post_id = :post_id AND user_id = :user_id");
+      $this->db->bind(':post_id', $post_id);
+      $this->db->bind(':user_id', $user_id);
+
+      $userViewExists = $this->db->single();
+
+      if(empty($userViewExists)) {
+        $this->db->query("INSERT INTO post_views (post_id, user_id) VALUES (:post_id, :user_id)");
+        $this->db->bind(':post_id', $post_id);
+        $this->db->bind(':user_id', $user_id);
+        $this->db->execute();
+      }
     }
   }
