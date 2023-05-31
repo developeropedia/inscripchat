@@ -76,4 +76,28 @@
         $this->db->execute();
       }
     }
+
+    public function like_dislike($post_id, $like_dislike)
+    {
+      $user_id = $_SESSION['user_id'];
+      $this->db->query("SELECT * FROM post_likes WHERE post_id = :post_id AND user_id = :user_id");
+      $this->db->bind(':post_id', $post_id);
+      $this->db->bind(':user_id', $user_id);
+
+      $userLikeExists = $this->db->single();
+
+      if (empty($userLikeExists)) {
+        $this->db->query("INSERT INTO post_likes (post_id, user_id, like_dislike) VALUES (:post_id, :user_id, :like_dislike)");
+        $this->db->bind(':post_id', $post_id);
+        $this->db->bind(':user_id', $user_id);
+        $this->db->bind(':like_dislike', $like_dislike);
+        return $this->db->execute();
+      } else {
+        $this->db->query("UPDATE post_likes SET like_dislike = :like_dislike WHERE post_id = :post_id AND user_id = :user_id");
+        $this->db->bind(':like_dislike', $like_dislike);
+        $this->db->bind(':post_id', $post_id);
+        $this->db->bind(':user_id', $user_id);
+        return $this->db->execute();
+      }
+    }
   }

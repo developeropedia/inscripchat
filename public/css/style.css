@@ -1652,3 +1652,32 @@ body {
       right: 10px;
       cursor: pointer;
     }
+
+    .highlight {
+      background: transparent;
+      color: #0000FF;
+    }
+
+    #post-like {
+      transition: transform 0.4s;
+    }
+
+    #post-dislike {
+      transition: transform 0.4s;
+    }
+
+    .post-liked:active {
+      -moz-transform: scale(1.2) rotate(-25deg);
+        -webkit-transform: scale(1.2) rotate(-25deg);
+        -o-transform: scale(1.2) rotate(-25deg);
+        -ms-transform: scale(1.2) rotate(-25deg);
+        transform: scale(1.2) rotate(-25deg);
+    }
+
+    .post-disliked:active {
+      -moz-transform: scale(1.2) rotate(25deg);
+      -webkit-transform: scale(1.2) rotate(25deg);
+      -o-transform: scale(1.2) rotate(25deg);
+      -ms-transform: scale(1.2) rotate(25deg);
+      transform: scale(1.2) rotate(25deg);
+    }

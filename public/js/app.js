@@ -5,9 +5,12 @@ $("body").on("click", ".reply-btn", function(){
     if($(this).closest(".reply-text").length) {
         $(this).closest(".reply-text").find(".reply-text-container").toggleClass("reply-input");
         $(this).closest(".reply-text").find(".send-reply").toggleClass("d-none");
+        var textarea = $(this).closest(".reply-text").find(".reply-textarea2")
+        textarea.val("@" + $(this).data("username") + " ")
+        textarea.focus();
     } else {
-        $(this).closest(".comment-text").find(".reply-text-container").toggleClass("reply-input");
-        $(this).closest(".comment-text").find(".send-reply").toggleClass("d-none");
+        $(this).closest(".comment-text").find(".reply-text-container:first").toggleClass("reply-input");
+        $(this).closest(".comment-text").find(".send-reply:first").toggleClass("d-none");
     }
   });
  

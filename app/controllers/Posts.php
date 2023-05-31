@@ -42,4 +42,22 @@
           }
       }
     }
+
+    public function like_dislike()
+    {
+      $action = $_POST['action'];
+
+      if ($action === "like_post") {
+        $post_id = $_POST['post_id'];
+        $like_dislike = $_POST['like_dislike'];
+
+        $res = $this->postsModel->like_dislike($post_id, $like_dislike);
+
+        if ($res) {
+          echo json_encode(["result" => true]);
+        } else {
+          echo json_encode(["result" => false]);
+        }
+      }
+    }
   }
