@@ -483,7 +483,7 @@ body {
 .verification-message {
   position: fixed;
   top: 30px;
-  left: calc(50% - 230px);
+  left: calc(50% - 160px);
   color: white;
   background-color: #000000b6;
   padding: 10px 14px;
@@ -936,7 +936,7 @@ body {
 .verification-message-left {
   position: fixed;
   top: 30px;
-  left: calc(50% - 230px);
+  left: calc(50% - 160px);
   color: white;
   background-color: #000000b6;
   padding: 10px 14px;
@@ -952,7 +952,7 @@ body {
 .verification-message-delete {
   position: fixed;
   top: 30px;
-  left: calc(50% - 230px);
+  left: calc(50% - 160px);
   color: white;
   background-color: #000000b6;
   padding: 10px 14px;

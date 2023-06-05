@@ -83,4 +83,92 @@
 
       return $user;
     }
+
+    public function getFamiliarPeers()
+    {
+      $current_user = $this->getUserById($_SESSION['user_id']);
+      $this->db->query("SELECT * FROM users WHERE id != :id AND institution = :institution
+      AND id NOT IN (SELECT friend_id FROM friends WHERE user_id = :user_id)");
+      $this->db->bind(":id", $_SESSION['user_id']);
+      $this->db->bind(":user_id", $_SESSION['user_id']);
+      $this->db->bind(":institution", $current_user->institution);
+      
+      return $this->db->resultSet();
+    }
+
+  public function getAddedPeers() {
+    $current_user = $this->getUserById($_SESSION['user_id']);
+    $this->db->query("SELECT *, friends.friend_id as peerID FROM friends 
+    INNER JOIN users ON friends.friend_id = users.id 
+    WHERE friends.user_id = :user_id");
+    $this->db->bind(":user_id", $_SESSION['user_id']);
+
+    return $this->db->resultSet();
+  }
+
+    public function addPeers($peer_ids)
+    {
+      $user_id = $_SESSION['user_id'];
+
+      $query = "INSERT INTO friends (user_id, friend_id) VALUES ";
+      $params = array();
+
+      foreach ($peer_ids as $key => $friend_id) {
+        $query .= "(:user_id_$key, :friend_id_$key),";
+        $params[] = array(':user_id' => $user_id, ':friend_id' => $friend_id);
+      }
+
+      // Remove the trailing comma
+      $query = rtrim($query, ',');
+
+      $this->db->beginTransaction();
+
+      try {
+        $this->db->query($query);
+
+        // Bind the parameters
+        foreach ($params as $key => $param) {
+          $this->db->bind(':user_id_' . $key, $param[':user_id']);
+          $this->db->bind(':friend_id_' . $key, $param[':friend_id']);
+        }
+
+        $this->db->execute();
+
+        $this->db->commit();
+        return true;
+      } catch (PDOException $e) {
+        $this->db->rollBack();
+        return false;
+      }
+    }
+
+    public function deletePeers($peer_ids)
+    {
+      $user_id = $_SESSION['user_id'];
+      $query = "DELETE FROM friends WHERE user_id = :user_id AND friend_id IN (";
+      $params = array();
+      foreach ($peer_ids as $key => $friend_id) {
+        $query .= ":friend_id_$key,";
+        $params[] = array(':friend_id' => $friend_id);
+      }
+      // Remove the trailing comma
+      $query = rtrim($query, ',');
+      $query .= ")";
+      $this->db->beginTransaction();
+      try {
+        $this->db->query($query);
+      // Bind the parameters
+        $this->db->bind(':user_id', $user_id);
+        foreach ($params as $key => $param) {
+          $this->db->bind(':friend_id_'. $key, $param[':friend_id']);
+        }
+        $this->db->execute();
+        $this->db->commit();
+        return true;
+      } catch (PDOException $e) {
+        $this->db->rollBack();
+        return false;
+      }
+            
+    }
   }

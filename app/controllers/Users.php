@@ -99,4 +99,21 @@
         $_SESSION['user_name'] = $user->name;
         $_SESSION['user_username'] = $user->username;
     }
+
+    public function getFamiliarPeers()
+    {
+        return $this->userModel->getFamiliarPeers();
+    }
+
+    public function addPeers()
+    {
+        $peer_ids = $_POST['peerIDs'];
+        echo $this->userModel->addPeers($peer_ids);
+    }
+
+    public function deletePeers()
+    {
+        $peer_ids = $_POST['peerIDs'];
+        echo $this->userModel->deletePeers($peer_ids);
+    }
   }

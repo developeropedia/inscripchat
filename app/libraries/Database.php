@@ -56,6 +56,11 @@
       $this->stmt->bindValue($param, $value, $type);
     }
 
+    public function bindParam($param, $value)
+    {
+      $this->stmt->bindParam($param, $value);
+    }
+
     // Execute the prepared statement
     public function execute(){
       return $this->stmt->execute();
@@ -76,6 +81,20 @@
     // Get row count
     public function rowCount(){
       return $this->stmt->rowCount();
+    }
+
+    public function beginTransaction()
+    {
+      $this->dbh->beginTransaction();
+    }
+
+    public function commit()
+    {
+      $this->dbh->commit();
+    }
+    public function rollBack()
+    {
+      $this->dbh->rollBack();
     }
 
     public function lastInsertID()

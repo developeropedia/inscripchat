@@ -35,32 +35,146 @@
         $res = $this->db->execute();
 
         if ($res) {
-            return $this->userModel->getUserById($_SESSION['user_id']);
+            $user = $this->userModel->getUserById($_SESSION['user_id']);
+            $user->replyID = $this->db->lastInsertID();
+            return $user;
         } else {
             return false;
         }
     }
 
-    public function getPostComments($post_id)
-    {
-        $query = "SELECT post_comments.*, users.name, users.img, users.username FROM post_comments";
-        $query .= " LEFT JOIN users ON post_comments.user_id = users.id WHERE post_id = :post_id";
+    public function getPostComments($post_id) {
+        $user_id = $_SESSION['user_id'];
+        $query = "SELECT pc.*, users.name, users.img, users.username, cl.like_dislike
+              FROM post_comments pc
+              LEFT JOIN users ON pc.user_id = users.id
+              LEFT JOIN comment_likes cl ON pc.id = cl.comment_id AND cl.user_id = :user_id
+              WHERE pc.post_id = :post_id
+              ORDER BY (
+                  SELECT COUNT(*) FROM comment_likes
+                  WHERE comment_id = pc.id AND like_dislike = 1
+              ) DESC";
 
         $this->db->query($query);
         $this->db->bind(":post_id", $post_id);
+        $this->db->bind(":user_id", $user_id);
         $comments = $this->db->resultSet();
 
         return $comments;
     }
 
+
     public function getCommentReplies($comment_id) {
-        $query = "SELECT comment_replies.*, users.name, users.img, users.username FROM comment_replies";
-        $query .= " LEFT JOIN users ON comment_replies.user_id = users.id WHERE comment_id = :comment_id";
+        $user_id = $_SESSION['user_id'];
+        $query = "SELECT cr.*, users.name, users.img, users.username, rl.like_dislike
+              FROM comment_replies cr
+              LEFT JOIN users ON cr.user_id = users.id
+              LEFT JOIN reply_likes rl ON cr.id = rl.reply_id AND rl.user_id = :user_id
+              WHERE cr.comment_id = :comment_id
+              ORDER BY (
+                  SELECT COUNT(*) FROM reply_likes
+                  WHERE reply_id = cr.id AND like_dislike = 1
+              ) DESC";
 
         $this->db->query($query);
         $this->db->bind(":comment_id", $comment_id);
+        $this->db->bind(":user_id", $user_id);
         $replies = $this->db->resultSet();
 
         return $replies;
+    }
+
+
+    public function like_dislike($comment_id, $like_dislike) {
+        $user_id = $_SESSION['user_id'];
+        $this->db->query("SELECT * FROM comment_likes WHERE comment_id = :comment_id AND user_id = :user_id");
+        $this->db->bind(':comment_id', $comment_id);
+        $this->db->bind(':user_id', $user_id);
+
+        $userLikeExists = $this->db->single();
+        $like_dislike_count = new stdClass;
+        $result = false;
+
+        if (empty($userLikeExists)) {
+            $this->db->query("INSERT INTO comment_likes (comment_id, user_id, like_dislike) VALUES (:comment_id, :user_id, :like_dislike)");
+            $this->db->bind(':comment_id', $comment_id);
+            $this->db->bind(':user_id', $user_id);
+            $this->db->bind(':like_dislike', $like_dislike);
+            $result = $this->db->execute();
+        } else {
+            $this->db->query("UPDATE comment_likes SET like_dislike = :like_dislike WHERE comment_id = :comment_id AND user_id = :user_id");
+            $this->db->bind(':like_dislike', $like_dislike);
+            $this->db->bind(':comment_id', $comment_id);
+            $this->db->bind(':user_id', $user_id);
+            $result = $this->db->execute();
+        }
+
+        if (!$result) {
+            return false;
+        } else {
+            $likes_dislikes = $this->getCommentLikesDislikes($comment_id);
+            $like_dislike_count->likes = $likes_dislikes->likes;
+            $like_dislike_count->dislikes = $likes_dislikes->dislikes;
+
+            return $like_dislike_count;
+        }
+    }
+
+    public function reply_like_dislike($reply_id, $like_dislike) {
+        $user_id = $_SESSION['user_id'];
+        $this->db->query("SELECT * FROM reply_likes WHERE reply_id = :reply_id AND user_id = :user_id");
+        $this->db->bind(':reply_id', $reply_id);
+        $this->db->bind(':user_id', $user_id);
+
+        $userLikeExists = $this->db->single();
+        $like_dislike_count = new stdClass;
+        $result = false;
+
+        if (empty($userLikeExists)) {
+            $this->db->query("INSERT INTO reply_likes (reply_id, user_id, like_dislike) VALUES (:reply_id, :user_id, :like_dislike)");
+            $this->db->bind(':reply_id', $reply_id);
+            $this->db->bind(':user_id', $user_id);
+            $this->db->bind(':like_dislike', $like_dislike);
+            $result = $this->db->execute();
+        } else {
+            $this->db->query("UPDATE reply_likes SET like_dislike = :like_dislike WHERE reply_id = :reply_id AND user_id = :user_id");
+            $this->db->bind(':like_dislike', $like_dislike);
+            $this->db->bind(':reply_id', $reply_id);
+            $this->db->bind(':user_id', $user_id);
+            $result = $this->db->execute();
+        }
+
+        if (!$result) {
+            return false;
+        } else {
+            $likes_dislikes = $this->getReplyLikesDislikes($reply_id);
+            $like_dislike_count->likes = $likes_dislikes->likes;
+            $like_dislike_count->dislikes = $likes_dislikes->dislikes;
+
+            return $like_dislike_count;
+        }
+    }
+
+    public function getCommentLikesDislikes($comment_id)
+    {
+        $query = "SELECT COUNT(CASE WHEN like_dislike = 1 THEN 1 END) AS likes,
+                  COUNT(CASE WHEN like_dislike = 0 THEN 1 END) AS dislikes
+            FROM comment_likes
+            WHERE comment_id = :comment_id";
+
+        $this->db->query($query);
+        $this->db->bind(":comment_id", $comment_id);
+        return $this->db->single();
+    }
+
+    public function getReplyLikesDislikes($reply_id) {
+        $query = "SELECT COUNT(CASE WHEN like_dislike = 1 THEN 1 END) AS likes,
+                  COUNT(CASE WHEN like_dislike = 0 THEN 1 END) AS dislikes
+            FROM reply_likes
+            WHERE reply_id = :reply_id";
+
+        $this->db->query($query);
+        $this->db->bind(":reply_id", $reply_id);
+        return $this->db->single();
     }
   }

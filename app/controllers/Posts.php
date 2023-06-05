@@ -2,16 +2,23 @@
   class Posts extends Controller {
     private $postsModel;
     private $commentsModel;
+    private $usersModel;
+    private $groupsModel;
 
     public function __construct(){
         $this->postsModel = $this->model("Post");
         $this->commentsModel = $this->model("Comment");
-    }
+        $this->usersModel = $this->model("User");
+        $this->groupsModel = $this->model("Group");
+      }
     
     public function index(){
       $posts = $this->postsModel->getPosts(ADMIN_ID, true, POSTS_PER_PAGE);
+      $familiar_peers = $this->usersModel->getFamiliarPeers();
+      $peers = $this->usersModel->getAddedPeers();
+      $groups = $this->groupsModel->getRecentGroups();
      
-      $this->view("posts/index", ["title" => "InscripChat", "posts" => $posts]);
+      $this->view("posts/index", ["title" => "InscripChat", "posts" => $posts, "familiar_peers" => $familiar_peers, "peers" => $peers, "groups" => $groups]);
     }
 
     public function post($id)
@@ -54,7 +61,7 @@
         $res = $this->postsModel->like_dislike($post_id, $like_dislike);
 
         if ($res) {
-          echo json_encode(["result" => true]);
+          echo json_encode(["result" => true, "likes" => $res->likes, "dislikes" => $res->dislikes]);
         } else {
           echo json_encode(["result" => false]);
         }
