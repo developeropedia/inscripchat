@@ -44,10 +44,6 @@
     // Get Post By ID 
     public function getPostById($id, $view = false, $user_id = 0){
 
-      if($view && $user_id !== 0) {
-        $this->incrementPostViews($id, $user_id);
-      }
-
       $query = "SELECT posts.*, COALESCE(pv.views, 0) AS views, pl.like_dislike FROM posts 
       LEFT JOIN (SELECT post_id, COUNT(*) AS views
       FROM post_views
@@ -60,10 +56,14 @@
       $this->db->bind(':user_id', $user_id);
 
       $post = $this->db->single();
-      $post->likes = null;
-      $post->dislikes = null;
 
       if(!empty($post)) {
+        if ($view && $user_id !== 0) {
+          $this->incrementPostViews($id, $user_id);
+        }
+
+        $post->likes = null;
+        $post->dislikes = null;
         $likes_dislikes = $this->getPostLikesDislikes($id);
         if(!empty($likes_dislikes)) {
           $post->likes = $likes_dislikes->likes;
@@ -136,5 +136,29 @@
       $this->db->query($query);
       $this->db->bind(":post_id", $post_id);
       return $this->db->single();
+    }
+
+    public function addPost($group_id, $title, $content = null, $type = null, $tags = null)
+    {
+      $author_id = $_SESSION['user_id'];
+      $user = $this->userModel->getUserById($author_id);
+      $qualification = QUALIFICATION[$user->qualification];
+      $institution = $user->institution;
+      $course = $user->course;
+      
+      if(empty($tags)) {
+        $tags = $qualification . "," . $institution . "," . $course;
+      }
+
+      $query = "INSERT INTO posts (author_id, group_id, title, content, `type`, tags)
+      VALUES (:author_id, :group_id, :title, :content, :type, :tags);";
+      $this->db->query($query);
+      $this->db->bind(":author_id", $author_id);
+      $this->db->bind(":group_id", $group_id);
+      $this->db->bind(":title", $title);
+      $this->db->bind(":content", $content);
+      $this->db->bind(":type", $type);
+      $this->db->bind(":tags", $tags);
+      $this->db->execute();
     }
   }

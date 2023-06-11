@@ -28,6 +28,7 @@
       // Instantiate controller class
       $this->currentController = new $this->currentController;
 
+      $methodExists = false;
       // Check for second part of url
       if(isset($url[1])){
         // Check to see if method exists in controller
@@ -35,11 +36,28 @@
           $this->currentMethod = $url[1];
           // Unset 1 index
           unset($url[1]);
+          $methodExists = true;
+        } else {
+          $this->currentMethod = "pageNotFound";
         }
       }
 
+      // Instantiate controller class
+      $reflection = new ReflectionClass($this->currentController);
+      $this->currentController = $reflection->newInstanceArgs($this->params);
+
       // Get params
       $this->params = $url ? array_values($url) : [];
+
+      if($methodExists) {
+        $reflectionMethod = new ReflectionMethod($this->currentController, $this->currentMethod);
+        $parameters = $reflectionMethod->getParameters();
+        if(count($parameters) !== 0) {
+          if(empty($this->params)) {
+            $this->currentMethod = "pageNotFound";
+          }
+        }
+      }
 
       // Call a callback with array of params
       call_user_func_array([$this->currentController, $this->currentMethod], $this->params);

@@ -12,6 +12,10 @@
       $this->view("users/register", ["title" => "Registeration", "error" => ""]);
     }
 
+    public function pageNotFound() {
+      $this->view("pages/404.php", ["title" => "404 | Page not found"]);
+    }
+
     public function about(){
       $data = [
         'title' => 'About Us'

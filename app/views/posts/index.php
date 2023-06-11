@@ -27,6 +27,9 @@ if (!empty($posts)) {
 ?>
 
 <main>
+    <?php echo flash("group_deleted"); ?>
+    <?php echo flash("group_left"); ?>
+    <?php echo flash("post_added"); ?>
     <div class="container">
         <div class="col-lg-12">
             <form class="d-flex  w-100">
@@ -134,7 +137,7 @@ if (!empty($posts)) {
             <div class="modal-body">
                 <?php if (!empty($groups)) : ?>
                     <?php foreach ($groups as $group) : ?>
-                        <a href="" class="no-decoration">
+                        <a href="<?php echo URLROOT . '/groups/group/' . $group->id; ?>" class="no-decoration">
                             <div class="chat-notification mb-2">
                                 <div class="chat-notification-img">
                                     <img src="<?php echo URLROOT; ?>/public/images/group.jpg" alt="">
@@ -150,7 +153,8 @@ if (!empty($posts)) {
                                     </div>
                                     <div class="message-text">
                                         <p class="mb-0 pb-0 ">
-                                            <?php echo $group->comment ?? "No comments yet"; ?></p>
+                                            <?php echo $group->comment ?? "No comments yet"; ?>
+                                        </p>
                                         <!-- <div class="message-number ms-2">15</div> -->
                                     </div>
 
@@ -158,6 +162,8 @@ if (!empty($posts)) {
                             </div>
                         </a>
                     <?php endforeach; ?>
+                <?php else : ?>
+                    <p class="text-center">No groups</p>
                 <?php endif; ?>
             </div>
 
@@ -276,7 +282,7 @@ if (!empty($posts)) {
     </div>
 </div>
 <!-- Modal -->
-<div class="modal fade" id="created" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="createdGroup" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog  modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content ">
             <div class="d-flex justify-content-end message-popup">
@@ -289,142 +295,6 @@ if (!empty($posts)) {
 
             </div>
 
-        </div>
-    </div>
-</div>
-<!-- Modal -->
-<div class="modal fade" id="deleteGroup" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog  modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content ">
-            <div class="modal-header text-center">
-                <h5 class="modal-title text-center" id="exampleModalLabel">Delete Group</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
-            </div>
-            <div class="modal-body">
-                <div class="chat-notification align-items-center">
-                    <div class="chat-notification-img">
-                        <img src="<?php echo URLROOT; ?>/public/images/image 1.png" alt="">
-                    </div>
-                    <div class="chat-notification-text w-100">
-                        <div class="ms-1 ps-0 d-flex justify-content-between form-check w-100">
-                            <label class="form-check-label f-18 w-500 " for="flexCheckChecked">
-                                Lissa Expoy
-                            </label>
-                            <input class="form-check-input me-3" type="checkbox" value="" id="flexCheckChecked" checked>
-                        </div>
-                    </div>
-                </div>
-                <div class="chat-notification align-items-center">
-                    <div class="chat-notification-img">
-                        <img src="<?php echo URLROOT; ?>/public/images/image 1.png" alt="">
-                    </div>
-                    <div class="chat-notification-text w-100">
-                        <div class="ms-1 ps-0 d-flex justify-content-between form-check w-100">
-                            <label class="form-check-label f-18 w-500 " for="flexCheckChecked">
-                                Lissa Expoy
-                            </label>
-                            <input class="form-check-input me-3" type="checkbox" value="" id="flexCheckChecked">
-                        </div>
-                    </div>
-                </div>
-                <div class="chat-notification align-items-center">
-                    <div class="chat-notification-img">
-                        <img src="<?php echo URLROOT; ?>/public/images/image 1.png" alt="">
-                    </div>
-                    <div class="chat-notification-text w-100">
-                        <div class="ms-1 ps-0 d-flex justify-content-between form-check w-100">
-                            <label class="form-check-label f-18 w-500 " for="flexCheckChecked">
-                                Lissa Expoy
-                            </label>
-                            <input class="form-check-input me-3" type="checkbox" value="" id="flexCheckChecked">
-                        </div>
-                    </div>
-                </div>
-                <div class="chat-notification align-items-center">
-                    <div class="chat-notification-img">
-                        <img src="<?php echo URLROOT; ?>/public/images/image 1.png" alt="">
-                    </div>
-                    <div class="chat-notification-text w-100">
-                        <div class="ms-1 ps-0 d-flex justify-content-between form-check w-100">
-                            <label class="form-check-label f-18 w-500 " for="flexCheckChecked">
-                                Lissa Expoy
-                            </label>
-                            <input class="form-check-input me-3" type="checkbox" value="" id="flexCheckChecked">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer d-flex justify-content-center">
-                <button type="button" class="btn px-5 " data-bs-toggle="modal" data-bs-target="#no-member" data-bs-dismiss="modal">Delete</button>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Modal -->
-<div class="modal fade" id="leaveGroup" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog  modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content ">
-            <div class="modal-header text-center">
-                <h5 class="modal-title text-center" id="exampleModalLabel">Leave Group</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
-            </div>
-            <div class="modal-body">
-                <div class="chat-notification align-items-center">
-                    <div class="chat-notification-img">
-                        <img src="<?php echo URLROOT; ?>/public/images/image 1.png" alt="">
-                    </div>
-                    <div class="chat-notification-text w-100">
-                        <div class="ms-1 ps-0 d-flex justify-content-between form-check w-100">
-                            <label class="form-check-label f-18 w-500 " for="flexCheckChecked">
-                                Lissa Expoy
-                            </label>
-                            <input class="form-check-input me-3" type="checkbox" value="" id="flexCheckChecked" checked>
-                        </div>
-                    </div>
-                </div>
-                <div class="chat-notification align-items-center">
-                    <div class="chat-notification-img">
-                        <img src="<?php echo URLROOT; ?>/public/images/image 1.png" alt="">
-                    </div>
-                    <div class="chat-notification-text w-100">
-                        <div class="ms-1 ps-0 d-flex justify-content-between form-check w-100">
-                            <label class="form-check-label f-18 w-500 " for="flexCheckChecked">
-                                Lissa Expoy
-                            </label>
-                            <input class="form-check-input me-3" type="checkbox" value="" id="flexCheckChecked">
-                        </div>
-                    </div>
-                </div>
-                <div class="chat-notification align-items-center">
-                    <div class="chat-notification-img">
-                        <img src="<?php echo URLROOT; ?>/public/images/image 1.png" alt="">
-                    </div>
-                    <div class="chat-notification-text w-100">
-                        <div class="ms-1 ps-0 d-flex justify-content-between form-check w-100">
-                            <label class="form-check-label f-18 w-500 " for="flexCheckChecked">
-                                Lissa Expoy
-                            </label>
-                            <input class="form-check-input me-3" type="checkbox" value="" id="flexCheckChecked">
-                        </div>
-                    </div>
-                </div>
-                <div class="chat-notification align-items-center">
-                    <div class="chat-notification-img">
-                        <img src="<?php echo URLROOT; ?>/public/images/image 1.png" alt="">
-                    </div>
-                    <div class="chat-notification-text w-100">
-                        <div class="ms-1 ps-0 d-flex justify-content-between form-check w-100">
-                            <label class="form-check-label f-18 w-500 " for="flexCheckChecked">
-                                Lissa Expoy
-                            </label>
-                            <input class="form-check-input me-3" type="checkbox" value="" id="flexCheckChecked">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer d-flex justify-content-center">
-                <button type="button" class="btn px-5 " data-bs-dismiss="modal">Leave</button>
-            </div>
         </div>
     </div>
 </div>
@@ -450,6 +320,29 @@ if (!empty($posts)) {
 include APPROOT . "/views/inc/footer.php";
 
 ?>
+
+<script id="group-template" type="text/template">
+    <a href="{group_link}" class="no-decoration">
+        <div class="chat-notification mb-2">
+            <div class="chat-notification-img">
+                <img src="<?php echo URLROOT; ?>/public/images/group.jpg" alt="">
+            </div>
+            <div class="chat-notification-text  " style="width: 82%;">
+                <div class="d-flex justify-content-between">
+                    <p class="name mb-0 pb-0">{group_name}</p>
+                    <p class="date pb-0 mb-0">
+                        No comments yet
+                    </p>
+                </div>
+                <div class="message-text">
+                    <p class="mb-0 pb-0 ">
+                    <!-- <div class="message-number ms-2">15</div> -->
+                </div>
+
+            </div>
+        </div>
+    </a>
+</script>
 
 <script>
     $(document).ready(function() {
@@ -653,13 +546,20 @@ include APPROOT . "/views/inc/footer.php";
         // Create group
         $(".create-group-btn").click(function() {
             var groupName = $("#createGroup .group-name").val();
-            if(groupName === "") {
+            if (groupName === "") {
                 alert("Please enter group name")
                 return;
             }
-            var groupPeers = $("#createGroup .group-peers-list").map(function() {
+            var groupPeers = $("#createGroup .group-peers-list:has(:checkbox:checked)").map(function() {
                 return $(this).data("peer-id");
             }).get();
+
+            if (!groupPeers.length) {
+                alert("No peers to add")
+                return;
+            }
+
+            console.log(groupPeers);
 
             $.ajax({
                 url: appURL + "/groups/create",
@@ -670,13 +570,23 @@ include APPROOT . "/views/inc/footer.php";
                 },
                 success: function(response) {
                     console.log(response);
-                    if (response) {
+                    response = JSON.parse(response)
+                    if (response.error) {
                         $("#createGroup").modal("hide")
-                        $("#createGroup .group-name").val("");
-                        $("#createGroup .group-peers-list:has(:checkbox:checked)").remove();
+                        // $(".verification-group").text("Error creating group!");
+                        // $("#createdGroup").modal("show");
                     } else {
                         $("#createGroup").modal("hide")
-                        $(".verification-group").text("Error creating group!");
+                        $("#createGroup .group-name").val("");
+                        $("#createGroup .group-peers-list:has(:checkbox:checked)").find(":checkbox").prop("checked", false);
+                        $("#createdGroup").modal("show");
+
+                        // Append group to groups list
+                        var groupTemplate = $("#group-template").html();
+                        groupTemplate = groupTemplate
+                            .replace("{group_link}", appURL + "/groups/group/" + response.group_id)
+                            .replace("{group_name}", response.group_name)
+                        $("#Groups .modal-body").append(groupTemplate)
                     }
                 }
             })

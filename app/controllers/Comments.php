@@ -10,6 +10,10 @@
     {
         
     }
+
+    public function pageNotFound() {
+      $this->view("pages/404.php", ["title" => "404 | Page not found"]);
+    }
     
     public function insert(){     
       $action = $_POST['action'];

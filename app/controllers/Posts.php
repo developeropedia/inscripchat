@@ -21,13 +21,26 @@
       $this->view("posts/index", ["title" => "InscripChat", "posts" => $posts, "familiar_peers" => $familiar_peers, "peers" => $peers, "groups" => $groups]);
     }
 
+    public function pageNotFound()
+    {
+      $this->view("pages/404.php", ["title" => "404 | Page not found"]);
+    }
+
     public function post($id)
     {
       $post = $this->postsModel->getPostById($id, true, $_SESSION['user_id']);
+      $groups = $this->groupsModel->getRecentGroups();
+
+      if(empty($post)) {
+        $this->pageNotFound();
+        die();
+      }
+
       $posts = $this->postsModel->getPosts(0, true, 5);
       $comments = $this->commentsModel->getPostComments($id);
+      $peers = $this->usersModel->getAddedPeers();
 
-      $this->view("posts/post", ["title" => "InscripChat", "post" => $post, "posts" => $posts, "comments" => $comments]);
+      $this->view("posts/post", ["title" => "InscripChat", "post" => $post, "posts" => $posts, "comments" => $comments, "groups" => $groups, "peers" => $peers]);
     }
 
     public function fetch()
@@ -66,5 +79,53 @@
           echo json_encode(["result" => false]);
         }
       }
+    }
+
+    public function upload()
+    {
+      if($_SESSION['user_is_admin'] == 0) {
+        $this->pageNotFound();
+        die();
+      }
+
+      $this->view("posts/upload", ["title" => "InscripChat"]);
+    }
+
+    public function uploadPost()
+    {
+      if ($_SERVER['REQUEST_METHOD'] == "POST") {
+        $error = '';
+        $img = '';
+        $file = '';
+        $dir = '../public/uploads/';
+        $extensions = array("jpeg", "jpg", "png", "pdf");
+        foreach ($_FILES['img_file']['tmp_name'] as $key => $tmp_name) {
+          $file_name = $_FILES['img_file']['name'][$key];
+          $file_size = $_FILES['img_file']['size'][$key];
+          $file_tmp  = $_FILES['img_file']['tmp_name'][$key];
+          $file_type = $_FILES['img_file']['type'][$key];
+
+          $file_ext  = explode('.', $file_name);
+          $file_ext  = strtolower(end($file_ext));
+
+          $file_name = uniqid() . "-" . $file_name;
+          if (in_array($file_ext, $extensions) === true) {
+            if (move_uploaded_file($file_tmp, $dir . $file_name)) {
+              if($file_ext == "pdf") {
+               $img = "adobe pdf 1.png";
+               $file = $file_name;
+              } else {
+                $img = $file_name;
+                $file = $file_name;
+              }
+            } else
+              $error = 'Error in uploading file. File couldn\'t be uploaded.';
+          } else {
+            $error = 'Error in uploading file. File type is not allowed.';
+          }
+        }
+        echo (json_encode(array('error' => $error, 'img' => $img, 'file' => $file)));
+      }
+      die();
     }
   }

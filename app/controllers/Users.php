@@ -10,6 +10,10 @@
     {
         
     }
+
+    public function pageNotFound() {
+        $this->view("pages/404.php", ["title" => "404 | Page not found"]);
+    }
     
     public function register()
     {
@@ -98,6 +102,17 @@
         $_SESSION['user_email'] = $user->email; 
         $_SESSION['user_name'] = $user->name;
         $_SESSION['user_username'] = $user->username;
+        $_SESSION['user_is_admin'] = $user->is_admin;
+    }
+
+    public function logout() {
+        unset($_SESSION['user_id']);
+        unset($_SESSION['user_email']);
+        unset($_SESSION['user_name']);
+        unset($_SESSION['user_username']);
+        unset($_SESSION['user_is_admin']);
+
+        redirect("users/login");
     }
 
     public function getFamiliarPeers()

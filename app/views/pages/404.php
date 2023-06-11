@@ -11,6 +11,7 @@ include APPROOT . "/views/inc/nav.php";
             404
         </h1>
         <h3 class="text-secondary"><span class="text-danger">Oops!</span> Page not found.</h3>
+        <a style="text-decoration: none; color: #2F791C;" href="<?php echo URLROOT; ?>/posts/index"><i style="display: inline;" class="bi bi-arrow-return-left"></i> Home</a>
     </div>
 </div>
 

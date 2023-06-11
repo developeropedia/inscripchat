@@ -12,4 +12,8 @@
       redirect("users/register");
      
     }
+
+    public function pageNotFound() {
+      $this->view("pages/404.php", ["title" => "404 | Page not found"]);
+    }
   }
