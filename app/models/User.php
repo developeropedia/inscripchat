@@ -76,12 +76,21 @@
 
     // Find User By ID
     public function getUserById($id){
-      $this->db->query("SELECT *, users.name as userName, courses.name as course FROM users INNER JOIN courses ON courses.id = users.course WHERE users.id = :id");
+      $this->db->query("SELECT *, users.id as userID, users.name as userName, courses.name as course FROM users INNER JOIN courses ON courses.id = users.course WHERE users.id = :id");
       $this->db->bind(':id', $id);
 
       $user = $this->db->single();
 
       return $user;
+    }
+
+    public function getAdmin()
+    {
+      $this->db->query("SELECT * FROM users WHERE is_admin = 1 LIMIT 1");
+
+      $admin = $this->db->single();
+
+      return $admin;
     }
 
     public function getFamiliarPeers()

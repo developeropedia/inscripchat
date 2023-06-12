@@ -83,4 +83,10 @@ function formatStats(views) {
     }
 }
 
-
+$(document).ready(function() {
+    // Scroll chat-box to bottom
+    if($("#chat-box").length) {
+        $("#chat-box").scrollTop($("#chat-box")[0].scrollHeight);
+    }
+    
+})

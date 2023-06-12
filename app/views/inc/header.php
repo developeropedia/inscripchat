@@ -11,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/emoji.min.css">
     <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
     <title><?php echo $data["title"]; ?></title>
 
     <script>
@@ -47,6 +48,32 @@
             } else {
                 return seconds + (seconds === 1 ? " second ago" : " seconds ago");
             }
+        }
+
+        function chatTime(timestamp) {
+            // Convert the timestamp to a moment object
+            var momentObj = moment(timestamp);
+
+            // Get the current time
+            var currentTime = moment();
+
+            // Calculate the difference in hours between the current time and the timestamp
+            var hoursDiff = currentTime.diff(momentObj, 'hours');
+
+            // Format the time based on the conditions
+            var formattedTime;
+            if (hoursDiff < 24) {
+                // Display time like 9:00 AM
+                formattedTime = momentObj.format('h:mm A');
+            } else if (hoursDiff >= 24 && hoursDiff < 48) {
+                // Display "Yesterday"
+                formattedTime = 'Yesterday';
+            } else {
+                // Display the date
+                formattedTime = momentObj.format('D/M/Y');
+            }
+
+            return formattedTime;
         }
     </script>
 </head>
