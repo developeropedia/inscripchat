@@ -26,16 +26,19 @@ $commentObj = new Comment;
                                         <a href="<?php echo URLROOT; ?>/posts/post/<?php echo $post->id; ?>" class="no-decoration">
                                             <img src="<?php echo URLROOT; ?>/public/uploads/<?php echo $post->type == 'pdf' ? 'adobe pdf 1.png' : $post->content; ?>" alt="" class="w-100">
                                         </a>
-                                        <div class="menu-icon">
-                                            <div class="dropdown ">
-                                                <button type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <i class="bi bi-three-dots-vertical text-white"></i>
-                                                </button>
-                                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
-                                                    <li class="text-center p-0"><a class="dropdown-item text-center w-100 p-0">Delete</a></li>
-                                                </ul>
+                                        <?php if ($post->author_id == $_SESSION['user_id']) : ?>
+                                            <div class="menu-icon">
+                                                <div class="dropdown ">
+                                                    <button type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <i class="bi bi-three-dots-vertical text-white"></i>
+                                                    </button>
+                                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+                                                        <li class="text-center p-0"><a href="<?php echo URLROOT; ?>/posts/delete/<?php echo $post->id; ?>" class="dropdown-item text-center w-100 p-0">Delete</a></li>
+                                                    </ul>
+                                                </div>
                                             </div>
-                                        </div>
+                                        <?php else : ?>
+                                        <?php endif; ?>
                                     </div>
                                     <div class="d-flex justify-content-between align-items-center px-1 mb-2 mt-2">
                                         <h2 class="f-14 w-500  ellipsis-1 pt-0 mt-0"><?php echo $post->title; ?> </h2>
@@ -57,16 +60,19 @@ $commentObj = new Comment;
                             <?php else : ?>
                                 <iframe src="<?php echo URLROOT; ?>/public/uploads/<?php echo $postMain->content; ?>" frameborder="0" width="100%" height="500px"></iframe>
                             <?php endif; ?>
-                            <div class="menu-icon">
-                                <div class="dropdown ">
-                                    <button type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="bi bi-three-dots-vertical text-white"></i>
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                        <li class="text-center p-0"><a class="dropdown-item text-center w-100 p-0">Delete</a></li>
-                                    </ul>
+                            <?php if ($postMain->author_id == $_SESSION['user_id']) : ?>
+                                <div class="menu-icon">
+                                    <div class="dropdown ">
+                                        <button type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="bi bi-three-dots-vertical text-white"></i>
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                            <li class="text-center p-0"><a href="<?php echo URLROOT; ?>/posts/delete/<?php echo $postMain->id; ?>" class="dropdown-item text-center w-100 p-0">Delete</a></li>
+                                        </ul>
+                                    </div>
                                 </div>
-                            </div>
+                            <?php else : ?>
+                            <?php endif; ?>
 
                         </div>
                         <div class="d-flex justify-content-between align-items-center px-1 flex-wrap">
@@ -203,7 +209,7 @@ $commentObj = new Comment;
                                 </div>
                             <?php endforeach; ?>
                         <?php else : ?>
-                            <p class="text-center mt-3">No comments yet</p>
+                            <p class="text-center mt-3 no-comments">No comments yet</p>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -504,6 +510,7 @@ include APPROOT . "/views/inc/footer.php";
                         .replaceAll("{comment_id}", commentID)
                     $(".comments-container").prepend(html)
                     $("#comment").val("")
+                    $(".no-comments").remove()
                 } else {
                     alert("There is some error in adding comment!")
                 }

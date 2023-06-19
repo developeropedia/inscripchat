@@ -12,7 +12,7 @@
 
   // Autoload Classes
   spl_autoload_register(function($className){
-    if (file_exists(APPROOT . '\/models/' . $className . '.php')) {
+    if (file_exists(APPROOT . '/models/' . $className . '.php')) {
         // Load classes from the "models" directory
         require_once 'models/' . $className . '.php';
     } else {

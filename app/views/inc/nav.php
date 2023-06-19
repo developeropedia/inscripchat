@@ -2,6 +2,7 @@
 
 $groupObj2 = new Group;
 $userObj2 = new User;
+$chatObj2 = new Chat;
 
 $groups = $groupObj2->getRecentGroups();
 
@@ -10,6 +11,9 @@ if (count($groups) > 3) {
 }
 
 $currentUser = $userObj2->getUserById($_SESSION['user_id']);
+
+$chats = $chatObj2->getNotifications();
+$chats = array_slice($chats, 0, 3);
 
 ?>
 
@@ -21,12 +25,12 @@ $currentUser = $userObj2->getUserById($_SESSION['user_id']);
                     <img src="<?php echo URLROOT; ?>/public/images/logo.png" alt="" class=" navbar-logo">
                 </a>
 
-                <form class="d-flex  w-100">
+                <div class="d-flex w-100">
                     <div class="nav-form mx-auto">
-                        <input class="form-control me-2" type="text" placeholder="Search" aria-label="Search">
-                        <a href="result.html"><i class="bi bi-search"></i></a>
+                        <input class="form-control me-2 search-input" type="text" placeholder="Search">
+                        <a class="search-btn"><i class="bi bi-search"></i></a>
                     </div>
-                </form>
+                </div>
                 <div class="collapse navbar-collapse " id="navbarSupportedContent">
 
                     <div class="ms-auto d-flex align-items-center">
@@ -51,7 +55,7 @@ $currentUser = $userObj2->getUserById($_SESSION['user_id']);
                                     </li>
                                 <?php else : ?>
                                 <?php endif; ?>
-                                <li><a href="profile-setting.html"><i class="bi bi-people me-2 f-20"></i>Profile</a>
+                                <li><a href="<?php echo URLROOT; ?>/users/profile"><i class="bi bi-people me-2 f-20"></i>Profile</a>
                                 </li>
                                 <li><a href="<?php echo URLROOT; ?>/users/logout"><i class="bi bi-box-arrow-left me-2 f-20"></i>Logout</a></li>
 
@@ -59,8 +63,8 @@ $currentUser = $userObj2->getUserById($_SESSION['user_id']);
                             </ul>
                         </div>
                         <div class="parent">
-                            <a href="#" class="nav-link peer-icons "><i class="bi bi-person-fill"></i>
-                                <div class="message-number-notification">20</div>
+                            <a href="<?php echo URLROOT; ?>/chats" class="nav-link peer-icons "><i class="bi bi-person-fill"></i>
+                                <div class="message-number-notification d-none">0</div>
                             </a>
 
                             <ul class="child">
@@ -68,90 +72,51 @@ $currentUser = $userObj2->getUserById($_SESSION['user_id']);
                                 <div>
                                     <h1 class="drop-heading text-center">Peers</h1>
                                 </div>
-                                <li><a href="chat-peer.html">
-                                        <div class="chat-notification">
-                                            <div class="chat-notification-img">
-                                                <img src="<?php echo URLROOT; ?>/public/images/image 1.png" alt="">
-                                            </div>
-                                            <div class="chat-notification-text">
-                                                <div class="d-flex justify-content-between">
-                                                    <p class="name mb-0 pb-0">Lissa Expoy</p>
-                                                    <p class="date pb-0 mb-0">10 Sec</p>
-                                                </div>
-                                                <div class="message-text">
-                                                    <p class="mb-0 pb-0 ">
-                                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit
-                                                        itaque at asperiores, et odio deserunt facere doloremque
-                                                        recusandae tempore repudiandae?</p>
-                                                    <div class="message-number">10</div>
-                                                </div>
+                                <?php
+                                $totalUnreadMessages = 0;
+                                if (!empty($chats)) : ?>
+                                    <?php foreach ($chats as $key => $chat) :
+                                        $total = $chatObj2->totalUnreadMessages($chat->user_id);
+                                        if (!empty($total)) {
+                                            $totalUnreadMessages += $total;
+                                        }
+                                    ?>
+                                        <li>
+                                            <a href="<?php echo URLROOT; ?>/chats?id=<?php echo $chat->sender_id; ?>">
+                                                <div class="chat-notification">
+                                                    <div class="chat-notification-img">
+                                                        <img src="<?php echo URLROOT; ?>/public/images/<?php echo $chat->user_img; ?>" alt="">
+                                                    </div>
+                                                    <div class="chat-notification-text">
+                                                        <div class="d-flex justify-content-between">
+                                                            <p class="name mb-0 pb-0"><?php echo $chat->user_name; ?></p>
+                                                            <p class="date pb-0 mb-0">
+                                                                <script>
+                                                                    document.write(chatTime('<?php echo $chat->timestamp; ?>'));
+                                                                </script>
+                                                            </p>
+                                                        </div>
+                                                        <div class="message-text">
+                                                            <p class="mb-0 pb-0 ">
+                                                                <?php echo $chat->message; ?>
+                                                            </p>
+                                                            <?php if (!empty($total)) : ?>
+                                                                <div class="message-number"><?php echo $total; ?></div>
+                                                            <?php else : ?>
+                                                            <?php endif; ?>
+                                                        </div>
 
-                                            </div>
-                                        </div>
-                                    </a></li>
-                                <li><a href="chat-peer.html">
-                                        <div class="chat-notification">
-                                            <div class="chat-notification-img">
-                                                <img src="<?php echo URLROOT; ?>/public/images/image 1.png" alt="">
-                                            </div>
-                                            <div class="chat-notification-text">
-                                                <div class="d-flex justify-content-between">
-                                                    <p class="name mb-0 pb-0">Lissa Expoy</p>
-                                                    <p class="date pb-0 mb-0">10 Sec</p>
+                                                    </div>
                                                 </div>
-                                                <div class="message-text">
-                                                    <p class="mb-0 pb-0 ">
-                                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit
-                                                        itaque at asperiores, et odio deserunt facere doloremque
-                                                        recusandae tempore repudiandae?</p>
-                                                    <div class="message-number">1</div>
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                    </a></li>
-                                <li><a href="chat-peer.html">
-                                        <div class="chat-notification">
-                                            <div class="chat-notification-img">
-                                                <img src="<?php echo URLROOT; ?>/public/images/image 1.png" alt="">
-                                            </div>
-                                            <div class="chat-notification-text">
-                                                <div class="d-flex justify-content-between">
-                                                    <p class="name mb-0 pb-0">Lissa Expoy</p>
-                                                    <p class="date pb-0 mb-0">10 Sec</p>
-                                                </div>
-                                                <div class="message-text">
-                                                    <p class="mb-0 pb-0 ">
-                                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit
-                                                        itaque at asperiores, et odio deserunt facere doloremque
-                                                        recusandae tempore repudiandae?</p>
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                    </a></li>
-                                <li><a href="chat-peer.html">
-                                        <div class="chat-notification">
-                                            <div class="chat-notification-img">
-                                                <img src="<?php echo URLROOT; ?>/public/images/image 1.png" alt="">
-                                            </div>
-                                            <div class="chat-notification-text">
-                                                <div class="d-flex justify-content-between">
-                                                    <p class="name mb-0 pb-0">Lissa Expoy</p>
-                                                    <p class="date pb-0 mb-0">10 Sec</p>
-                                                </div>
-                                                <div class="message-text">
-                                                    <p class="mb-0 pb-0 ">
-                                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit
-                                                        itaque at asperiores, et odio deserunt facere doloremque
-                                                        recusandae tempore repudiandae?</p>
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                    </a></li>
+                                            </a>
+                                        </li>
+                                    <?php endforeach; ?>
+                                <?php else : ?>
+                                    <p class="text-center">No chats yet</p>
+                                <?php endif; ?>
                             </ul>
                         </div>
+                        <input type="hidden" id="total-unread-msgs" value="<?php echo isset($totalUnreadMessages) ? $totalUnreadMessages : 0; ?>">
                         <div class="parent">
                             <a href="#" class="nav-link peer-icons "> <i class="bi bi-people-fill"></i></a>
                             <ul class="child">
@@ -188,6 +153,8 @@ $currentUser = $userObj2->getUserById($_SESSION['user_id']);
                                             </a>
                                         </li>
                                     <?php endforeach; ?>
+                                <?php else : ?>
+                                    <p class="text-center">No comments</p>
                                 <?php endif; ?>
                             </ul>
                         </div>

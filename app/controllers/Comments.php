@@ -3,6 +3,10 @@
     private $commentsModel;
 
     public function __construct(){
+        if (!isset($_SESSION['user_id'])) {
+          redirect("users/login");
+        }
+
         $this->commentsModel = $this->model("Comment");
     }
     

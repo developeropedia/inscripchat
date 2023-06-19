@@ -6,6 +6,10 @@ include APPROOT . "/views/inc/nav.php";
 $chats = $data["chats"];
 $user = $data["user"];
 $admin = $data["admin"];
+$familiarPeers = $data["familiar_peers"];
+$online_users = $data["online_users"];
+$peers = $data["peers"];
+
 
 $chatObj = new Chat;
 
@@ -27,12 +31,16 @@ $chatObj = new Chat;
                                 <h2 class="m-0 p-0 mt-1">Online</h2>
                             </div>
                         </div>
-                        <div class="chat-add-btn ">
+                        <div class="chat-add-btn " data-bs-toggle="modal" data-bs-target="#addPeer">
                             <p class="mb-0 pb-0 f-14 w-500">Add peers</p>
                             <img src="<?php echo URLROOT ?>/public/images/button.add.png" alt="">
                         </div>
-                        <div class="chat-add-btn mb-1">
+                        <div class="chat-add-btn mb-1" data-bs-toggle="modal" data-bs-target="#activePeer">
                             <p class="mb-0 pb-0 f-14 w-500">Active Chats</p>
+                            <img src="<?php echo URLROOT ?>/public/images/button.add.png" alt="">
+                        </div>
+                        <div class="chat-add-btn mb-1" data-bs-toggle="modal" data-bs-target="#newChat">
+                            <p class="mb-0 pb-0 f-14 w-500">New Chat</p>
                             <img src="<?php echo URLROOT ?>/public/images/button.add.png" alt="">
                         </div>
                         <?php if ($user->userID !== $admin->id) : ?>
@@ -51,6 +59,10 @@ $chatObj = new Chat;
 
                     <div class="peer-chats px-1">
                         <span class="mt-2"></span>
+                        <?php if (isset($_GET['id'])) : ?>
+                            <input type="hidden" value="<?php echo $_GET['id']; ?>" id="make-active">
+                        <?php else : ?>
+                        <?php endif; ?>
                         <?php if (!empty($chats)) : ?>
                             <?php foreach ($chats as $chat) :
                                 if ($chat->user_id === $admin->id) {
@@ -115,6 +127,115 @@ $chatObj = new Chat;
         </div>
     </div>
 </main>
+
+<div class="verification-message">
+    Peers have been added successfully!
+</div>
+<div class="verification-message-delete">
+    Peers have been deleted successfully!
+</div>
+
+<!--add peer Modal -->
+<div class="modal fade" id="addPeer" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog  modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content ">
+            <div class="modal-header text-center">
+                <h5 class="modal-title text-center" id="exampleModalLabel">Add peers you are familiar with</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <div class="modal-body">
+                <?php if (!empty($familiarPeers)) : ?>
+                    <?php foreach ($familiarPeers as $peer) : ?>
+                        <div class="chat-notification align-items-center add-peers-list delete-peers-list" data-peer-id="<?php echo $peer->id; ?>">
+                            <div class="chat-notification-img">
+                                <img src="<?php echo URLROOT; ?>/public/images/<?php echo $peer->img; ?>" alt="">
+                            </div>
+                            <div class="chat-notification-text bg-dange w-100">
+                                <div class="ms-1 ps-0 d-flex justify-content-between form-check w-100">
+                                    <label class="form-check-label f-18 w-500 " for="flexCheckChecked">
+                                        <?php echo $peer->username; ?>
+                                    </label>
+                                    <input class="form-check-input me-3" type="checkbox" value="" id="flexCheckChecked">
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else : ?>
+                    <p class="no-peer">No peers match with your institution</p>
+                <?php endif; ?>
+            </div>
+            <div class="modal-footer d-flex justify-content-center">
+                <button type="button" class="btn px-5 successfull-btn add-peer-btn">Add</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--active peer Modal -->
+<div class="modal fade" id="activePeer" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog  modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content ">
+            <div class="modal-header text-center">
+                <h5 class="modal-title text-center" id="exampleModalLabel">Active Peers</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <div class="modal-body online-users">
+                <?php if (!empty($online_users)) : ?>
+                    <?php foreach ($online_users as $online_user) : ?>
+                        <div class="chat-notification online-user align-items-center" data-user-name="<?php echo $online_user->name; ?>" data-peer-id="<?php echo $online_user->userID; ?>">
+                            <div class="chat-notification-img">
+                                <img src="<?php echo URLROOT; ?>/public/images/<?php echo $online_user->img; ?>" alt="">
+                            </div>
+                            <div class="chat-notification-text w-100">
+                                <div class="ms-1 ps-0 d-flex justify-content-between align-items-center form-check w-100">
+                                    <label class="form-check-label f-18 w-500 chat-user-name" for="flexCheckChecked">
+                                        <?php echo $online_user->name; ?>
+                                    </label>
+                                    <div class="online-peers me-3"></div>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else : ?>
+                    <p class="text-center no-online">No online users</p>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--active peer Modal -->
+<div class="modal fade" id="newChat" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog  modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content ">
+            <div class="modal-header text-center">
+                <h5 class="modal-title text-center" id="exampleModalLabel">Start New Chat</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <div class="modal-body new-users">
+                <?php if (!empty($peers)) : ?>
+                    <?php foreach ($peers as $peer) : ?>
+                        <div class="chat-notification new-user align-items-center" data-user-name="<?php echo $peer->name; ?>" data-peer-id="<?php echo $peer->id; ?>">
+                            <div class="chat-notification-img">
+                                <img src="<?php echo URLROOT; ?>/public/images/<?php echo $peer->img; ?>" alt="">
+                            </div>
+                            <div class="chat-notification-text w-100">
+                                <div class="ms-1 ps-0 d-flex justify-content-between align-items-center form-check w-100">
+                                    <label class="form-check-label f-18 w-500 chat-user-name" for="flexCheckChecked">
+                                        <?php echo $peer->name; ?>
+                                    </label>
+                                    <!-- <div class="online-peers me-3"></div> -->
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else : ?>
+                    <p class="text-center no-online">No peers</p>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <?php
@@ -293,25 +414,89 @@ include APPROOT . "/views/inc/footer.php";
     </div>
 </script>
 
+<script id="online-user-template" type="text/template">
+    <div class="chat-notification align-items-center online-user" data-peer-id="{peer_id}">
+        <div class="chat-notification-img">
+            <img src="<?php echo URLROOT; ?>/public/images/{img}" alt="">
+        </div>
+        <div class="chat-notification-text w-100">
+            <div class="ms-1 ps-0 d-flex justify-content-between align-items-center form-check w-100">
+                <label class="form-check-label f-18 w-500 chat-user-name" for="flexCheckChecked">
+                    {name}
+                </label>
+                <div class="online-peers me-3"></div>
+            </div>
+        </div>
+    </div>
+</script>
+
 <script>
     var timeTag = '';
     const appURL = "<?php echo URLROOT; ?>";
+
+    $(document).ready(function() {
+        var makeActive = $("#make-active");
+        if (makeActive.length) {
+            var makeActiveChat = makeActive.val()
+            $(".chat[data-peer-id='" + makeActiveChat + "']").click()
+        }
+    })
+
     // Show selected user chat
-    $(document).on("click", ".peer-chats .chat, .admin-chat-btn", function() {
+    $(document).on("click", ".peer-chats .chat, .admin-chat-btn, .online-user, .new-user", function() {
         if ($(this).hasClass("active-chat")) {
             return;
         }
+
+        $("#activePeer").modal("hide")
+        $("#newChat").modal("hide")
 
         var isAdmin = $(this).hasClass("admin-chat-btn");
         $(".chat, .admin-chat-btn").removeClass("active-chat");
         $(this).addClass("active-chat");
         const peerID = $(this).data("peer-id")
 
+        var currentUrl = window.location.href;
+        var urlObj = new URL(currentUrl);
+        if (urlObj.searchParams.has("id")) {
+            var newIdValue = peerID;
+            urlObj.searchParams.set("id", newIdValue);
+            var updatedUrl = urlObj.href;
+            history.pushState(null, "", updatedUrl);
+        }
+
         var chatTemplate = $("#chat-template").html()
         if (isAdmin) {
             chatTemplate = chatTemplate.replace("{chat_user_name}", $(this).data("admin-name"))
         } else {
             chatTemplate = chatTemplate.replace("{chat_user_name}", $(this).find(".chat-user-name").text())
+        }
+
+        if ($(this).hasClass("online-user") || $(this).hasClass("new-user")) {
+            var onlinePeerId = $(this).data("peer-id");
+            if (!$(".peer-chats .chat[data-peer-id='" + onlinePeerId + "']").length) {
+                $(".chat, .admin-chat-btn").removeClass("active-chat")
+                $(".chat[data-peer-id='" + onlinePeerId + "']").addClass("active-chat")
+                var img = $(this).find("img").attr("src").split("/")
+                img = img[img.length - 1];
+
+                var momentObj = moment();
+                var timestamp = momentObj.format("YYYY-MM-DD HH:mm:ss");
+
+                var chatMenuTemplate = $("#chat-menu-template").html()
+                chatMenuTemplate = chatMenuTemplate
+                    .replace("{user_name}", $(this).find(".chat-user-name").text())
+                    .replace("{user_img}", img)
+                    .replace("{user_id}", onlinePeerId)
+                    .replace("{time}", chatTime(Date.now()))
+                    .replace("{timestamp}", timestamp)
+                    .replace("{msg_text}", "");
+
+                $(".peer-chats").append(chatMenuTemplate)
+                sortChatsByTimestamp();
+            }
+            $(".chat, .admin-chat-btn").removeClass("active-chat");
+            $(".chat[data-peer-id='" + onlinePeerId + "']").addClass("active-chat")
         }
 
         var chatBox = $(".chat-peer-messages");
@@ -335,7 +520,6 @@ include APPROOT . "/views/inc/footer.php";
                 peerID
             },
             success: function(response) {
-                console.log(response);
                 response = JSON.parse(response);
                 if (response.chat) {
                     var currentDate = null;
@@ -469,6 +653,7 @@ include APPROOT . "/views/inc/footer.php";
                     peerID
                 },
                 success: function(response) {
+                    console.log(response);
                     response = JSON.parse(response)
                     if (response.msgs) {
                         response.msgs.forEach((msg) => {
@@ -516,7 +701,6 @@ include APPROOT . "/views/inc/footer.php";
             },
             success: function(response) {
                 response = JSON.parse(response);
-                console.log(response);
                 if (response.msgs.length !== prevMsgsLength) {
                     sortChatsByTimestamp();
                 }
@@ -579,6 +763,103 @@ include APPROOT . "/views/inc/footer.php";
     sortChatsByTimestamp();
 
     // setInterval(sortChatsByTimestamp, 1000);
+    // Add Peers
+    $(".add-peer-btn").click(function() {
+        if ($("#addPeer").find(".no-peer").length) {
+            $(".verification-message").text("No peers to add")
+            $("#addPeer").modal("hide")
+            return;
+        }
+
+        const peerIDs = $("#addPeer .add-peers-list:has(:checkbox:checked)").map(function() {
+            return $(this).data("peer-id");
+        }).get();
+
+        if (!$("#addPeer").find(".no-peer").length && !peerIDs.length) {
+            $(".verification-message").text("No peers selected to add")
+            $("#addPeer").modal("hide")
+            return;
+        }
+
+        $.ajax({
+            url: appURL + "/users/addPeers",
+            method: "POST",
+            data: {
+                action: "add_peers",
+                peerIDs
+            },
+            success: function(response) {
+                if (response) {
+
+                    $("#addPeer .add-peers-list:has(:checkbox:checked)").remove();
+
+                    $("#addPeer").modal("hide")
+                    $(".verification-message").text("Peers have been added successfully!");
+
+                    if (!$("#addPeer .add-peers-list").length) {
+                        $("#addPeer .modal-body").append('<p class="no-peer">No peers to add</p>')
+                    }
+                } else {
+                    $("#addPeer").modal("hide")
+                    $(".verification-message").text("Error adding peers!");
+                }
+            }
+        })
+    })
+
+    // Get online users
+    function fetchOnlineUsers() {
+        $.ajax({
+            url: appURL + '/users/getOnlineUsers',
+            method: 'POST',
+            success: function(response) {
+                response = JSON.parse(response)
+                if (response.onlineUsers) {
+                    // Create an array to store the online peer IDs
+                    var onlinePeerIds = [];
+
+                    // Iterate over the online users and populate the onlinePeerIds array
+                    response.onlineUsers.forEach(user => {
+                        onlinePeerIds.push(user.userID);
+                    });
+
+                    // Remove the online-user div if its data-peer-id is not in the onlinePeerIds array
+                    $('.online-user').each(function() {
+                        var peerId = $(this).data('peer-id');
+                        if (!onlinePeerIds.includes(peerId)) {
+                            $(this).remove();
+                        }
+                    });
+
+                    // Check if there are online users
+                    if (onlinePeerIds.length > 0) {
+                        $('.no-online').remove(); // Remove the .no-online div
+                    } else {
+                        // Append the .no-online div if there are no online users
+                        if (!$(".no-online").length) {
+                            $(".online-users").append('<div class="text-center no-online">No online users</div>');
+                        }
+                    }
+
+                    // Append the online users to the online-users div
+                    response.onlineUsers.forEach(user => {
+                        var peerId = user.userID;
+                        if (!$(`.online-user[data-peer-id=${peerId}]`).length) {
+                            var onlineUserTemplate = $("#online-user-template").html();
+                            onlineUserTemplate = onlineUserTemplate
+                                .replace("{peer_id}", user.userID)
+                                .replaceAll("{name}", user.name)
+                                .replace("{img}", user.img);
+                            $(".online-users").append(onlineUserTemplate);
+                        }
+                    });
+                }
+            }
+        });
+
+    }
+
+    setInterval(fetchOnlineUsers, 1000);
 </script>
 
 <!-- Admin chat -->

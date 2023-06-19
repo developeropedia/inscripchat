@@ -1,0 +1,100 @@
+:root {
+    --primary: #7367f0;
+    --secondary: #02103f;
+    --gray-light: #f3f3f9;
+    --gray-light2: #FDFDFE;
+    --gray-dark: #959596;
+    --white: #fff;
+    --light-black: #495057;
+    --text-gray: #878a99;
+    --green-light: rgba(10, 179, 156, .18);
+    --green: #0ab39c;
+    --blue: rgb(75, 53, 145);
+    --blue-light: rgba(41, 156, 219, .18) !important;
+    --orange: #f7b84b;
+    --orange-light: rgba(247, 184, 75, .18) !important;
+    --primary-light: rgba(64, 81, 137, .18) !important;
+}
+
+
+.f-12 {
+    font-size: 12px;
+}
+
+.f-14 {
+    font-size: 14px;
+}
+
+.f-16 {
+    font-size: 16px !important;
+}
+
+.f-18 {
+    font-size: 18px;
+}
+
+.f-20 {
+    font-size: 20px;
+}
+
+.f-22 {
+    font-size: 22px;
+}
+
+.f-28 {
+    font-size: 28px;
+}
+
+.f-32 {
+    font-size: 32px !important;
+}
+
+.f-35 {
+    font-size: 35px !important;
+}
+
+.f-40 {
+    font-size: 40px !important;
+}
+
+.w-400 {
+    font-weight: 600 !important;
+}
+
+.w-500 {
+    font-weight: 500 !important;
+}
+
+.w-600 {
+    font-weight: 600 !important;
+}
+
+
+
+.primary-color {
+    color: var(--primary);
+}
+
+.bg-gray {
+    background-color: var(--gray-light);
+}
+
+.bg-primary {
+    background-color: var(--primary);
+}
+
+.text-gray {
+    color: var(--text-gray);
+}
+
+.text-dark {
+    color: rgb(52, 50, 50) !important;
+}
+
+.text-dark-light {
+    color: var(--light-black);
+}
+
+.text-green {
+    color: var(--green);
+}

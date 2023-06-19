@@ -4,6 +4,10 @@
     private $userModel;
 
     public function __construct(){
+        if (!isset($_SESSION['user_id'])) {
+            redirect("users/login");
+        }
+
         $this->chatModel = $this->model("Chat");
         $this->userModel = $this->model("User");
     }
@@ -14,7 +18,10 @@
         $chats = $this->chatModel->getChats();
         $user = $this->userModel->getUserById($_SESSION['user_id']);
         $admin = $this->userModel->getAdmin();
-        $this->view("chats/index", ["title" => "Chat", "chats" => $chats, "user" => $user, "admin" => $admin]);
+        $familiar_peers = $this->userModel->getFamiliarPeers();
+        $online_users = $this->userModel->getOnlineUsers();
+        $peers = $this->userModel->getAddedPeers();
+        $this->view("chats/index", ["title" => "Chat", "chats" => $chats, "user" => $user, "admin" => $admin, "familiar_peers" => $familiar_peers, "online_users" => $online_users, "peers" => $peers]);
     }
 
     public function pageNotFound() {

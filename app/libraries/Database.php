@@ -12,6 +12,7 @@
     private $pass = DB_PASS;
     private $dbname = DB_NAME;
 
+    private static $instance = null;
     private $dbh;
     private $stmt;
     private $error;
@@ -28,6 +29,13 @@
         $this->error = $e->getMessage();
         echo $this->error;
       }
+    }
+
+    public static function getInstance() {
+      if (self::$instance === null) {
+        self::$instance = new Database();
+      }
+      return self::$instance;
     }
 
     // Prepare statement with query

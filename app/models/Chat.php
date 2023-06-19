@@ -3,7 +3,7 @@
     private $db;
 
     public function __construct(){
-      $this->db = new Database;
+      $this->db = Database::getInstance();
     }
 
     public function getChats()
@@ -39,6 +39,70 @@
       $this->db->bind(':user_id', $_SESSION['user_id']);
       return $this->db->resultSet();
     }
+    
+    // Get chat between sender and receiver, also get users data
+    public function getChat($sender_id, $receiver_id) {
+      $query = "SELECT c.sender_id, c.receiver_id, c.message, c.timestamp,
+      us.name AS sender_name, ur.name AS receiver_name, us.img AS sender_img, ur.img AS receiver_img
+      FROM chats c
+      JOIN users us ON us.id = c.sender_id
+      JOIN users ur ON ur.id = c.receiver_id
+      WHERE c.sender_id = :sender_id AND c.receiver_id = :receiver_id
+      OR c.sender_id = :receiver_id AND c.receiver_id = :sender_id
+      ORDER BY c.timestamp ASC;";
+      $this->db->query($query);
+      $this->db->bind(':sender_id', $sender_id);
+      $this->db->bind(':receiver_id', $receiver_id);
+      return $this->db->resultSet();
+    }
+
+    public function getChatsForAdmin() {
+      $query = "SELECT c.sender_id, c.receiver_id, c.message, c.timestamp,
+              us.name AS sender_name, ur.name AS receiver_name, us.img AS sender_img, ur.img AS receiver_img
+              FROM chats c
+              JOIN (
+                  SELECT LEAST(sender_id, receiver_id) AS min_id, GREATEST(sender_id, receiver_id) AS max_id, MAX(timestamp) AS max_timestamp
+                  FROM chats
+                  WHERE sender_id != receiver_id
+                  GROUP BY min_id, max_id
+              ) latest_chats
+              ON LEAST(c.sender_id, c.receiver_id) = latest_chats.min_id
+              AND GREATEST(c.sender_id, c.receiver_id) = latest_chats.max_id
+              AND c.timestamp = latest_chats.max_timestamp
+              JOIN users us ON us.id = c.sender_id
+              JOIN users ur ON ur.id = c.receiver_id
+              WHERE us.is_admin = 0 AND ur.is_admin = 0
+              ORDER BY c.timestamp DESC";
+      $this->db->query($query);
+      return $this->db->resultSet();
+    }
+
+
+  public function getNotifications() {
+    $query = "SELECT 
+    c.sender_id, 
+    c.receiver_id, 
+    c.message, 
+    c.timestamp, 
+    u.id AS user_id, 
+    u.name AS user_name, 
+    u.username AS user_username, 
+    u.img AS user_img
+    FROM chats c
+    INNER JOIN users u ON u.id = c.sender_id
+    WHERE receiver_id = :user_id
+    AND c.timestamp = (
+        SELECT MAX(timestamp)
+        FROM chats
+        WHERE sender_id = c.sender_id AND receiver_id = c.receiver_id
+    )
+    ORDER BY c.timestamp DESC;";
+
+    $this->db->query($query);
+    $this->db->bind(':user_id', $_SESSION['user_id']);
+    return $this->db->resultSet();
+  }
+
 
     // Fetch chat with peer
     public function fetchChat($peer_id)
@@ -122,7 +186,7 @@
       $query = "SELECT *, users.name AS peer_name, users.img AS peer_img FROM chats 
       INNER JOIN users ON users.id = chats.sender_id
       WHERE (sender_id = :peer_id AND receiver_id = :user_id) 
-      AND status = 0";
+      AND chats.status = 0";
       $this->db->query($query);
       $this->db->bind(':peer_id', $peer_id);
       $this->db->bind(':user_id', $_SESSION['user_id']);

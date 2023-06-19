@@ -4,7 +4,7 @@
     private $userModel;
 
     public function __construct(){
-      $this->db = new Database;
+      $this->db = Database::getInstance();
       $this->userModel = new User;
     }
 
@@ -160,5 +160,24 @@
       $this->db->bind(":type", $type);
       $this->db->bind(":tags", $tags);
       $this->db->execute();
+    }
+
+    public function delete($id)
+    {
+      $this->db->query("DELETE FROM posts WHERE id = :id");
+      $this->db->bind(":id", $id);
+      $this->db->execute();
+    }
+
+    public function search($q)
+    {
+      $q = str_replace("*", " ", $q);
+      $query = "SELECT *, COALESCE(pv.views, 0) AS views FROM posts
+      LEFT JOIN (SELECT post_id, COUNT(*) AS views
+      FROM post_views
+      GROUP BY post_id) pv ON posts.id = pv.post_id
+      WHERE title LIKE '%$q%' OR tags LIKE '%$q%'";
+      $this->db->query($query);
+      return $this->db->resultSet();
     }
   }

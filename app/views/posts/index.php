@@ -51,17 +51,19 @@ if (!empty($posts)) {
                             <a href="<?php echo URLROOT; ?>/posts/post/<?php echo $imagePost->id; ?>">
                                 <img src="<?php echo URLROOT; ?>/public/uploads/<?php echo $imagePost->content; ?>" alt="" class="w-100">
                             </a>
-                            <div class="menu-icon">
-                                <div class="dropdown ">
-                                    <button type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="bi bi-three-dots-vertical text-white"></i>
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                        <li class="text-center p-0"><a class="dropdown-item text-center w-100 p-0">Delete</a></li>
-                                    </ul>
+                            <?php if ($imagePost->author_id == $_SESSION['user_id']) : ?>
+                                <div class="menu-icon">
+                                    <div class="dropdown ">
+                                        <button type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="bi bi-three-dots-vertical text-white"></i>
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                            <li class="text-center p-0"><a href="<?php echo URLROOT; ?>/posts/delete/<?php echo $imagePost->id; ?>" class="dropdown-item text-center w-100 p-0">Delete</a></li>
+                                        </ul>
+                                    </div>
                                 </div>
-                            </div>
-
+                            <?php else : ?>
+                            <?php endif; ?>
                         </div>
                         <div class="d-flex justify-content-between px-1 ">
                             <h2 class="second-heading py-1 ellipsis-1"><?php echo $imagePost->title; ?></h2>
@@ -72,20 +74,23 @@ if (!empty($posts)) {
                 <?php if (!empty($posts)) : ?>
                     <?php foreach ($posts as $post) : ?>
                         <div class="col-lg-4 col-md-6 col-sm-10 col-12 mx-auto mb-3 ">
-                            <div class="main-img w-100">
+                            <div class="<?php echo $post->type == 'pdf' ? 'doc-img' : 'main-img'; ?> w-100">
                                 <a href="<?php echo URLROOT; ?>/posts/post/<?php echo $post->id; ?>" class="no-decoration">
                                     <img src="<?php echo URLROOT; ?>/public/uploads/<?php echo $post->type == 'pdf' ? 'adobe pdf 1.png' : $post->content; ?>" alt="" class="w-100">
                                 </a>
-                                <div class="menu-icon">
-                                    <div class="dropdown ">
-                                        <button type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="bi bi-three-dots-vertical text-white"></i>
-                                        </button>
-                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
-                                            <li class="text-center p-0"><a class="dropdown-item text-center w-100 p-0">Delete</a></li>
-                                        </ul>
+                                <?php if ($post->author_id == $_SESSION['user_id']) : ?>
+                                    <div class="menu-icon">
+                                        <div class="dropdown ">
+                                            <button type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="bi bi-three-dots-vertical text-white"></i>
+                                            </button>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+                                                <li class="text-center p-0"><a href="<?php echo URLROOT; ?>/posts/delete/<?php echo $post->id; ?>" class="dropdown-item text-center w-100 p-0">Delete</a></li>
+                                            </ul>
+                                        </div>
                                     </div>
-                                </div>
+                                <?php else : ?>
+                                <?php endif; ?>
                             </div>
                             <div class="d-flex justify-content-between align-items-center px-1 mb-2 mt-2">
                                 <h2 class="f-14 w-500  ellipsis-1 pt-0 mt-0"><?php echo $post->title; ?></h2>
@@ -350,6 +355,7 @@ include APPROOT . "/views/inc/footer.php";
         var isLoading = false;
         const appURL = "<?php echo URLROOT; ?>";
         const adminID = "<?php echo ADMIN_ID; ?>";
+        const currentUserID = "<?php echo $_SESSION['user_id']; ?>";
 
         // Load initial posts
         // loadPosts();
@@ -369,7 +375,7 @@ include APPROOT . "/views/inc/footer.php";
         // Function to load posts via AJAX
         function loadPosts() {
             isLoading = true;
-            // $('.posts').append('<p>Loading posts...</p>');
+            // $('.posts').append('<p class="loading-posts">Loading posts...</p>');
 
             $.ajax({
                 url: appURL + '/posts/fetch',
@@ -383,9 +389,39 @@ include APPROOT . "/views/inc/footer.php";
                 success: function(response) {
                     // console.log(response);
                     response = JSON.parse(response);
+                    // $(".posts .loading-posts").remove()
 
                     if (response.posts) {
                         response.posts.forEach((post) => {
+
+                            var postTemplate = `<div class="col-lg-4 col-md-6 col-sm-10 col-12 mx-auto mb-3 ">
+                                <div class="main-img w-100">
+                                    <a href="${appURL}/posts/post/${post.id}" class="no-decoration">
+                                        <img src="${appURL}/public/uploads/${ post.type == 'pdf' ? 'adobe pdf 1.png' : post.content }" alt="" class="w-100">
+                                    </a>`
+
+                            if (post.author_id == currentUserID) {
+                                postTemplate += `<div class="menu-icon">
+                                        <div class="dropdown ">
+                                            <button type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown"
+                                                aria-expanded="false">
+                                                <i class="bi bi-three-dots-vertical text-white"></i>
+                                            </button>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+                                                <li class="text-center p-0"><a  href="${appURL}/posts/delete/${post.id}"
+                                                        class="dropdown-item text-center w-100 p-0">Delete</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>`
+                            }
+
+                            postTemplate += `</div>
+                                <div class="d-flex justify-content-between align-items-center px-1 mb-2 mt-2">
+                                    <h2 class="f-14 w-500  ellipsis-1 pt-0 mt-0">${ post.title }</h2>
+                                    <h2 class="f-12 w-500  pb-0 pt-0 mt-0 ellipsis-1">${ formatStats(post.views) } Views</h2>
+                                </div>
+                            </div>`
+
                             $('.posts').append(`<div class="col-lg-4 col-md-6 col-sm-10 col-12 mx-auto mb-3 ">
                                 <div class="main-img w-100">
                                     <a href="${appURL}/posts/post/${post.id}" class="no-decoration">
@@ -398,7 +434,7 @@ include APPROOT . "/views/inc/footer.php";
                                                 <i class="bi bi-three-dots-vertical text-white"></i>
                                             </button>
                                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
-                                                <li class="text-center p-0"><a
+                                                <li class="text-center p-0"><a  href="${appURL}/posts/delete/${post.id}"
                                                         class="dropdown-item text-center w-100 p-0">Delete</a></li>
                                             </ul>
                                         </div>

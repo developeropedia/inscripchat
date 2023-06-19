@@ -5,13 +5,13 @@ include APPROOT . "/views/inc/nav.php";
 
 $postObj = new Post;
 
-if(isset($_POST['title'])) {
+if (isset($_POST['title'])) {
     $title = $_POST['title'];
     $tags = $_POST['tags'];
     $file = $_POST['file'];
     $type = pathinfo($file, PATHINFO_EXTENSION);
 
-    if($type == "pdf") {
+    if ($type == "pdf") {
         $type = "pdf";
     } else {
         $type = "image";
@@ -50,7 +50,6 @@ if(isset($_POST['title'])) {
                         </div>
                     </div>
                     <input type="hidden" name="file" id="uploadedFile">
-
 
                 </div>
             </div>
@@ -109,7 +108,7 @@ include APPROOT . "/views/inc/footer.php";
 
         // Function to show messages
         function ajax_msg(status, msg) {
-            var the_msg = '<div class="alert p-1 alert-' + (status ? 'success' : 'danger') + '">';
+            var the_msg = '<div class="alert p-1 px-3 alert-' + (status ? 'success' : 'danger') + '">';
             the_msg += msg;
             the_msg += '</div>';
             $(the_msg).insertBefore(img_zone);
@@ -236,7 +235,7 @@ include APPROOT . "/views/inc/footer.php";
         var tags = $("#tags").val()
         var uploadedFile = $("#uploadedFile").val()
 
-        if(title == "" || tags == "" || uploadedFile == "") {
+        if (title == "" || tags == "" || uploadedFile == "") {
             alert("Please fill all the fields")
             return;
         }

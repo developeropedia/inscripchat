@@ -1,3 +1,12 @@
+<?php
+
+$userObj2 = new User;
+
+$userObj2->updateOnlineUsers();
+$userObj2->deleteOfflineUsers();
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 

@@ -6,6 +6,10 @@
     private $groupsModel;
 
     public function __construct(){
+        if (!isset($_SESSION['user_id'])) {
+          redirect("users/login");
+        }
+
         $this->postsModel = $this->model("Post");
         $this->commentsModel = $this->model("Comment");
         $this->usersModel = $this->model("User");
@@ -22,12 +26,14 @@
 
     public function group($id)
     {
-      if(!$this->groupsModel->isGroupMember($_SESSION['user_id'], $id)) {
+      $group = $this->groupsModel->group($id);
+      $user = $this->usersModel->getUserById($_SESSION['user_id']);
+      
+      if(!$group->owner_id === $user->id && !$this->groupsModel->isGroupMember($_SESSION['user_id'], $id)) {
         $this->view("pages/404.php", ["title" => "404 | Page not found"]);
         die();
       }
-      $group = $this->groupsModel->group($id);
-      $user = $this->usersModel->getUserById($_SESSION['user_id']);
+      
       $peersNotInGroup = $this->groupsModel->fetchPeersNotInGroup($id);
       $groupPeers = $this->groupsModel->getGroupPeers($id);
 

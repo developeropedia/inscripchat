@@ -1,9 +1,12 @@
 <?php
   class Users extends Controller {
     private $userModel;
+    private $courseModel;
 
     public function __construct(){
+
         $this->userModel = $this->model("User");
+        $this->courseModel = $this->model("Course");
     }
 
     public function index()
@@ -30,7 +33,7 @@
             $data["qualification"] = $_POST['qualification'];
             $data["institution"] = $_POST['institution'];
             $data["error"] = "";
-            $data["title"] = "Registeration";
+            $data["title"] = "Registration";
 
             if($this->userModel->findUserByUsername($data["username"])) {
                 $data["error"] = "This username is already taken!";
@@ -43,7 +46,7 @@
             if(empty($data["error"])) {
                 $data["password"] = password_hash($data["password"], PASSWORD_BCRYPT);
 
-                if($this->userModel->register($data)) {
+                if($this->userModel->register($data, $_FILES)) {
                     flash("register_success", "Registration Successful!");
                     redirect("users/login");
                 }
@@ -130,5 +133,39 @@
     {
         $peer_ids = $_POST['peerIDs'];
         echo $this->userModel->deletePeers($peer_ids);
+    }
+
+    public function profile()
+    {
+        if(!$this->isLoggedIn()) {
+            redirect("users/login");
+        }
+        $user = $this->userModel->getUserById($_SESSION['user_id']);
+        $courses = $this->courseModel->getCourses();
+
+        $this->view('users/profile', ["title" => "Profile", "user" => $user, "courses" => $courses]);
+    }
+
+    public function editProfile()
+    {
+        if (!$this->isLoggedIn()) {
+            redirect("users/login");
+        }
+
+        $user_data = $_POST;
+        $file = $_FILES;
+
+        $res = $this->userModel->editProfile($user_data, $file);
+        if($res) {
+            $_SESSION['user_name'] = $user_data['name'];
+            $_SESSION['user_email'] = $user_data['email']; 
+            redirect("users/profile");
+        }
+    }
+
+    public function getOnlineUsers()
+    {
+        $res = $this->userModel->getOnlineUsers();
+        echo json_encode(["onlineUsers" => $res]);
     }
   }

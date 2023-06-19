@@ -1,0 +1,112 @@
+@media only screen and (max-width: 1124px) {
+    .box {
+        height: 30px;
+        width: 30px;
+        border-radius: 6px;
+        font-size: 15px;
+    }
+}
+@media only screen and (max-width:768px){
+    .heading-row-div {
+        flex-direction: column;
+        align-items:flex-start !important;
+    }
+    .btns-row{
+        width: 100%;
+        justify-content: flex-end;
+        margin-top: 15px;
+    }
+    .profile-card {
+        width: 100%;
+        flex-direction: column;
+    
+    }
+}
+@media only screen and (max-width:459px) {
+   
+    .notification-dropdown{
+        position: absolute;
+        left: 0px !important;
+        width: 300px;
+        top: 10px !important;
+        padding-bottom: 0px !important;
+    }
+    .box {
+        height: 70px;
+        width: 70px;
+        border-radius: 6px;
+        font-size: 23px;
+    }
+
+    .p-20 {
+        padding: 22px;
+    }
+
+   
+
+    .calendar {
+        min-width: 100px !important;
+    }
+    .sign-form{
+        width: 100%;
+        padding: 15px;
+    }
+}
+
+@media only screen and (max-width:400px) {
+    .p-20{
+        padding: 15px;
+    }
+    
+    .panel-button {
+        min-width: 100px;
+        font-size: 12px;
+        white-space: nowrap;
+    }
+   
+    .calendar {
+        min-width: 100px;
+        max-width: 100px;
+        font-size: 12px;
+    }
+    .menu-btn .btn{
+        height: 34px;
+        width: 34px;
+       
+    }
+    .input-group-text{
+        border-radius: 3px !important;
+        height: 34px;
+        width: 34px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 14px;
+    }
+}
+
+
+@media only screen and (max-width:340px) {
+   
+    .panel-button {
+        min-width: 80px;
+        font-size: 10px;
+        white-space: nowrap;
+    }
+   
+    .calendar {
+        min-width: 80px;
+        max-width: 80px;
+        font-size: 10px;
+    }
+
+    .input-group-text{
+        border-radius: 3px !important;
+        height: 30px;
+        width: 30px;
+        display: flex;
+      
+        font-size: 10px;
+    }
+   
+}

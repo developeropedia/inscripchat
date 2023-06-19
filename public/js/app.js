@@ -90,3 +90,37 @@ $(document).ready(function() {
     }
     
 })
+
+$(".search-input").keypress(function(e) {
+    if(e.which == 13) {
+        $(".search-btn").click()
+    }
+})
+
+$(".search-btn").click(function(e) {
+    e.preventDefault();
+
+    var q = $(".search-input").val()
+    if(q === "") {
+        return;
+    }
+
+    q = q.replace(/\s+/g, "*");
+    window.location.href = urlRoot + "/posts/search/" + q;
+})
+
+$(".group-name").keypress(function(e) {
+    if (e.which == 13) {
+        e.preventDefault()
+        $(".create-group-btn").click()
+    }
+})
+
+// Show total notifications
+$(document).ready(function() {
+    var total = $("#total-unread-msgs").val();
+    if(total > 0) {
+        $(".message-number-notification").removeClass("d-none")
+        $(".message-number-notification").text(total)
+    }
+})

@@ -6,6 +6,10 @@
     private $groupsModel;
 
     public function __construct(){
+        if(!isset($_SESSION['user_id'])) {
+          redirect("users/login");
+        }
+
         $this->postsModel = $this->model("Post");
         $this->commentsModel = $this->model("Comment");
         $this->usersModel = $this->model("User");
@@ -98,7 +102,7 @@
         $img = '';
         $file = '';
         $dir = '../public/uploads/';
-        $extensions = array("jpeg", "jpg", "png", "pdf");
+        $extensions = array("jpeg", "jpg", "png", "pdf", "jfif");
         foreach ($_FILES['img_file']['tmp_name'] as $key => $tmp_name) {
           $file_name = $_FILES['img_file']['name'][$key];
           $file_size = $_FILES['img_file']['size'][$key];
@@ -127,5 +131,20 @@
         echo (json_encode(array('error' => $error, 'img' => $img, 'file' => $file)));
       }
       die();
+    }
+
+    public function search($q)
+    {
+      $results = $this->postsModel->search($q);
+      $familiar_peers = $this->usersModel->getFamiliarPeers();
+      $peers = $this->usersModel->getAddedPeers();
+      $groups = $this->groupsModel->getRecentGroups();
+      $this->view("posts/search", ["title" => "Results", "results" => $results, "familiar_peers" => $familiar_peers, "peers" => $peers, "groups" => $groups]);
+    }
+
+    public function delete($id)
+    {
+      $this->postsModel->delete($id);
+      redirect("posts");
     }
   }

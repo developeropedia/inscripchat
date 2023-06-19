@@ -4,7 +4,7 @@
     private $userModel;
 
     public function __construct(){
-      $this->db = new Database;
+      $this->db = Database::getInstance();
       $this->userModel = new User;
     }
 
@@ -18,7 +18,7 @@
     // Get groups having recent comments on posts
     public function getRecentGroups() {
         $user_id = $_SESSION['user_id'];
-        $query = "SELECT DISTINCT g.id, g.name, pc.comment, pc.created_at
+        $query = "SELECT DISTINCT g.id, g.name, pc.comment, pc.created_at, p.content, p.id AS postID
         FROM groups g
         LEFT JOIN posts p ON g.id = p.group_id
         LEFT JOIN (
