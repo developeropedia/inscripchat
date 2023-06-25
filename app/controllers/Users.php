@@ -47,7 +47,15 @@
                 $data["password"] = password_hash($data["password"], PASSWORD_BCRYPT);
 
                 if($this->userModel->register($data, $_FILES)) {
-                    flash("register_success", "Registration Successful!");
+                    flash("register_success", "Check your mailbox for confirmation email!");
+
+                    $token = md5(uniqid() . $data['email']);
+                    $body = "Thank you for registering. Please click the link below to confirm your email address:<br><br>";
+                    $body .= "<a href='". URLROOT ."/users/confirm/$token'>Confirm Email</a>";
+
+                    $this->userModel->updateToken($token, $data['email']);
+
+                    sendMail($data['email'], $data['name'], "Confirmation", $body);
                     redirect("users/login");
                 }
             } else {
@@ -167,5 +175,17 @@
     {
         $res = $this->userModel->getOnlineUsers();
         echo json_encode(["onlineUsers" => $res]);
+    }
+
+    public function confirm($token) {
+        $res = $this->userModel->confirmEmail($token);
+        if(!empty($res)) {
+            $this->userModel->updateConfirmed($res->id);
+            flash("email_confirmed", "Email confirmed successfully!");
+            redirect("users/login");
+        } else {
+            flash("email_not_confirmed", "Email could not be confirmed!", "errorMsg");
+            redirect("users/login");
+        }
     }
   }

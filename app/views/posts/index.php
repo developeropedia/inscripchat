@@ -30,6 +30,7 @@ if (!empty($posts)) {
     <?php echo flash("group_deleted"); ?>
     <?php echo flash("group_left"); ?>
     <?php echo flash("post_added"); ?>
+    <?php echo flash("removed_from_group", "", "errorMsg"); ?>
     <div class="container">
         <div class="col-lg-12">
             <form class="d-flex  w-100">

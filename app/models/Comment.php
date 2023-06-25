@@ -18,8 +18,9 @@
         $res = $this->db->execute();
 
         if($res) {
+            $lastCommentID = $this->db->lastInsertID();
             $user = $this->userModel->getUserById($_SESSION['user_id']);
-            $user->commentID = $this->db->lastInsertID();
+            $user->commentID = $lastCommentID;
             return $user;
         } else {
             return false;

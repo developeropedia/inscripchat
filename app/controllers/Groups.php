@@ -29,7 +29,7 @@
       $group = $this->groupsModel->group($id);
       $user = $this->usersModel->getUserById($_SESSION['user_id']);
       
-      if(!$group->owner_id === $user->id && !$this->groupsModel->isGroupMember($_SESSION['user_id'], $id)) {
+      if(ADMIN_ID !== $user->userID && $group->owner_id !== $user->userID && !$this->groupsModel->isGroupMember($_SESSION['user_id'], $id)) {
         $this->view("pages/404.php", ["title" => "404 | Page not found"]);
         die();
       }

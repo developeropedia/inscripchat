@@ -1665,6 +1665,14 @@ body {
       cursor: pointer;
     }
 
+    .emojiBtnCommentReply {
+      color: #838EAB;
+      position: absolute;
+      top: 8px;
+      right: 30px;
+      cursor: pointer;
+    }
+
     .send-reply {
       color: #838EAB;
       position: absolute;

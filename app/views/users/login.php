@@ -14,6 +14,8 @@ include APPROOT . "/views/inc/header.php";
             <div class="w-40 h-100 ms-auto  d-flex flex-column justify-content-center">
                 <div class="sign-content">
                     <?php flash('register_success'); ?>
+                    <?php flash('email_confirmed', '', 'successMsg'); ?>
+                    <?php flash('email_not_confirmed', '', 'errorMsg'); ?>
                     <h1 class="sign-heading mb-3">Sign In</h1>
                     <p class="text-danger"><?php echo $data['error']; ?></p>
                     <div class="mb-4">

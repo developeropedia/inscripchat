@@ -5,45 +5,68 @@ include APPROOT . "/views/inc/nav.php";
 
 $commentObj = new Comment;
 $postObj = new Post;
+$groupObj = new Group;
+
+if (isset($_GET['d'])) {
+    $postObj->delete($_GET['d']);
+    flash("post_deleted", "Post have been deleted");
+
+    $currentUrl = $_SERVER['REQUEST_URI'];
+    $modifiedUrl = preg_replace('/[?&]d=\d+/', '', $currentUrl);
+    $arr = explode("/", $modifiedUrl);
+
+    redirect("groups/group/" . end($arr));
+}
 
 if (isset($_POST['submit'])) {
     $title = $_POST['title'];
     $group_id = $_POST['group_id'];
     $error = "";
 
-    // Upload image or pdf less than 10mb
-    $file = $_FILES['file'];
-    $fileName = $_FILES['file']['name'];
-    $fileTmpName = $_FILES['file']['tmp_name'];
-    $fileSize = $_FILES['file']['size'];
-    $fileError = $_FILES['file']['error'];
-    $fileType = $_FILES['file']['type'];
-    $fileExt = explode('.', $fileName);
-    $fileActualExt = strtolower(end($fileExt));
-    $allowed = array('jpg', 'jpeg', 'png', 'pdf');
-    if (in_array($fileActualExt, $allowed)) {
-        if ($fileError === 0) {
-            if ($fileSize < 10000000) {
-                $fileNameNew = uniqid('', true) . "." . $fileActualExt;
-                $fileDestination = '../public/uploads/' . $fileNameNew;
-                $fileRes = move_uploaded_file($fileTmpName, $fileDestination);
+    if (!$groupObj->isGroupMember($_SESSION['user_id'], $group_id)) {
+        flash("removed_from_group", "You have been removed from group", "errorMsg");
+        redirect("posts");
+    }
 
-                if (!$fileRes) {
-                    echo "Error uploading file!";
+    if (!empty($_FILES['file']['name'])) {
+        // Upload image or pdf less than 10mb
+        $file = $_FILES['file'];
+        $fileName = $_FILES['file']['name'];
+        $fileTmpName = $_FILES['file']['tmp_name'];
+        $fileSize = $_FILES['file']['size'];
+        $fileError = $_FILES['file']['error'];
+        $fileType = $_FILES['file']['type'];
+        $fileExt = explode('.', $fileName);
+        $fileActualExt = strtolower(end($fileExt));
+        $allowed = array('jpg', 'jpeg', 'png', 'pdf');
+        if (in_array($fileActualExt, $allowed)) {
+            if ($fileError === 0) {
+                if ($fileSize < 10000000) {
+                    $fileNameNew = uniqid('', true) . "." . $fileActualExt;
+                    $fileDestination = '../public/uploads/' . $fileNameNew;
+                    $fileRes = move_uploaded_file($fileTmpName, $fileDestination);
+
+                    if (!$fileRes) {
+                        echo "Error uploading file!";
+                    } else {
+                        $type = $fileActualExt == "pdf" ? "pdf" : "image";
+                        $postObj->addPost($group_id, $title, $fileNameNew, $type);
+
+                        redirect("/groups/group/" . $group_id);
+                    }
                 } else {
-                    $type = $fileActualExt == "pdf" ? "pdf" : "image";
-                    $postObj->addPost($group_id, $title, $fileNameNew, $type);
-
-                    redirect("/groups/group/" . $group_id);
+                    $error =  "Your file is too big!";
                 }
             } else {
-                $error =  "Your file is too big!";
+                $error = "There was an error uploading your file!";
             }
         } else {
-            $error = "There was an error uploading your file!";
+            $error = "You cannot upload files of this type!";
         }
     } else {
-        $error = "You cannot upload files of this type!";
+        $postObj->addPost($group_id, null, $title, "text");
+
+        redirect("groups/group/" . $group_id);
     }
 }
 
@@ -69,6 +92,7 @@ $groupPeers = $data["groupPeers"];
 <?php endif;
 endif; ?>
 <main>
+    <?php echo flash("post_deleted"); ?>
     <div class="container">
         <div class="row ">
             <div class="col-lg-7 mx-auto mt-4">
@@ -119,7 +143,7 @@ endif; ?>
             </div>
 
             <?php if (!empty($posts)) : ?>
-                <?php foreach ($posts as $post) : ?>
+                <?php foreach ($posts as $key1 => $post) : ?>
                     <?php
                     $post->likes = null;
                     $post->dislikes = null;
@@ -150,19 +174,24 @@ endif; ?>
                             <div class="main-img-full w-100">
                                 <?php if ($post->type === "image") : ?>
                                     <img src="<?php echo URLROOT; ?>/public/uploads/<?php echo $post->content; ?>" alt="" class="w-100 mb-1">
-                                <?php else : ?>
+                                <?php elseif ($post->type === "pdf") : ?>
                                     <iframe src="<?php echo URLROOT; ?>/public/uploads/<?php echo $post->content; ?>" frameborder="0" width="100%" height="500px"></iframe>
+                                <?php else : ?>
+                                    <p style="text-align: justify; border: 1px solid #cecece" class="p-2"><?php echo $post->content; ?></p>
                                 <?php endif; ?>
-                                <div class="menu-icon">
-                                    <div class="dropdown ">
-                                        <button type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="bi bi-three-dots-vertical text-white"></i>
-                                        </button>
-                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                            <li class="text-center p-0"><a class="dropdown-item text-center w-100 p-0">Delete</a></li>
-                                        </ul>
+                                <?php if ($post->author_id == $_SESSION['user_id'] || ADMIN_ID == $_SESSION['user_id']) : ?>
+                                    <div class="menu-icon">
+                                        <div class="dropdown ">
+                                            <button type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="bi bi-three-dots-vertical text-white"></i>
+                                            </button>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                                <li class="text-center p-0"><a href="?d=<?php echo $post->id; ?>" class="dropdown-item text-center w-100 p-0 delete-post">Delete</a></li>
+                                            </ul>
+                                        </div>
                                     </div>
-                                </div>
+                                <?php else : ?>
+                                <?php endif; ?>
 
                             </div>
                             <div class="d-flex justify-content-between align-items-center px-1">
@@ -171,19 +200,19 @@ endif; ?>
                                     <h2 class="second-heading py-1 m-0 p-0 me-2"><?php echo formatStats($post->views); ?> Views</h2>
                                     <span class="me-2">
 
-                                        <svg id="post-like" data-value="1" xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="<?php echo ($post->like_dislike == 1 && $post->like_dislike !== null) ? '#2F791C' : 'currentColor'; ?>" class="bi bi-hand-thumbs-up-fill thumb post-liked" viewBox="0 0 16 16">
+                                        <svg id="post-like" data-value="1" xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="<?php echo ($post->like_dislike == 1 && $post->like_dislike !== null) ? '#2F791C' : 'currentColor'; ?>" class="bi bi-hand-thumbs-up-fill thumb post-liked post-like" viewBox="0 0 16 16">
                                             <path d="M6.956 1.745C7.021.81 7.908.087 8.864.325l.261.066c.463.116.874.456 1.012.965.22.816.533 2.511.062 4.51a9.84 9.84 0 0 1 .443-.051c.713-.065 1.669-.072 2.516.21.518.173.994.681 1.2 1.273.184.532.16 1.162-.234 1.733.058.119.103.242.138.363.077.27.113.567.113.856 0 .289-.036.586-.113.856-.039.135-.09.273-.16.404.169.387.107.819-.003 1.148a3.163 3.163 0 0 1-.488.901c.054.152.076.312.076.465 0 .305-.089.625-.253.912C13.1 15.522 12.437 16 11.5 16H8c-.605 0-1.07-.081-1.466-.218a4.82 4.82 0 0 1-.97-.484l-.048-.03c-.504-.307-.999-.609-2.068-.722C2.682 14.464 2 13.846 2 13V9c0-.85.685-1.432 1.357-1.615.849-.232 1.574-.787 2.132-1.41.56-.627.914-1.28 1.039-1.639.199-.575.356-1.539.428-2.59z" />
 
                                         </svg>
-                                        <small id="post-like-count"><?php echo $post->likes > 0 ? formatStats($post->likes) : ''; ?></small>
+                                        <small id="post-like-count" class="post-like-count"><?php echo $post->likes > 0 ? formatStats($post->likes) : ''; ?></small>
                                     </span>
                                     <span>
 
-                                        <svg id="post-dislike" data-value="0" xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="<?php echo ($post->like_dislike == 0 && $post->like_dislike !== null) ? '#2F791C' : 'currentColor'; ?>" class="bi bi-hand-thumbs-down-fill post-disliked thumb" viewBox="0 0 16 16">
+                                        <svg id="post-dislike" data-value="0" xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="<?php echo ($post->like_dislike == 0 && $post->like_dislike !== null) ? '#2F791C' : 'currentColor'; ?>" class="bi bi-hand-thumbs-down-fill post-disliked thumb post-dislike" viewBox="0 0 16 16">
                                             <path d="M6.956 14.534c.065.936.952 1.659 1.908 1.42l.261-.065a1.378 1.378 0 0 0 1.012-.965c.22-.816.533-2.512.062-4.51.136.02.285.037.443.051.713.065 1.669.071 2.516-.211.518-.173.994-.68 1.2-1.272a1.896 1.896 0 0 0-.234-1.734c.058-.118.103-.242.138-.362.077-.27.113-.568.113-.856 0-.29-.036-.586-.113-.857a2.094 2.094 0 0 0-.16-.403c.169-.387.107-.82-.003-1.149a3.162 3.162 0 0 0-.488-.9c.054-.153.076-.313.076-.465a1.86 1.86 0 0 0-.253-.912C13.1.757 12.437.28 11.5.28H8c-.605 0-1.07.08-1.466.217a4.823 4.823 0 0 0-.97.485l-.048.029c-.504.308-.999.61-2.068.723C2.682 1.815 2 2.434 2 3.279v4c0 .851.685 1.433 1.357 1.616.849.232 1.574.787 2.132 1.41.56.626.914 1.28 1.039 1.638.199.575.356 1.54.428 2.591z" />
 
                                         </svg>
-                                        <small id="post-dislike-count"><?php echo $post->dislikes > 0 ? formatStats($post->dislikes) : ''; ?></small>
+                                        <small id="post-dislike-count" class="post-dislike-count"><?php echo $post->dislikes > 0 ? formatStats($post->dislikes) : ''; ?></small>
                                     </span>
                                 </div>
                                 <input type="hidden" id="post-id" value="<?php echo $post->id; ?>">
@@ -194,17 +223,18 @@ endif; ?>
                                 <?php echo formatStats(count($comments)); ?> Conversations
                             </h1>
                             <div class="d-flex align-items-center mt-3 w-100">
-                                <div class="dp"><img src="<?php echo URLROOT; ?>/public/images/image 1.png" alt="" class="img-fluid"></div>
+                                <div class="dp"><img src="<?php echo URLROOT; ?>/public/images/<?php echo $user->img; ?>" alt="" class="img-fluid"></div>
                                 <div class="comment-input w-100 ms-2">
                                     <!-- <input type="text" class="w-100" placeholder="Comment"> -->
                                     <textarea name="" class="comment-inputs" id="comment" width="100" rows="1" placeholder="Comment"></textarea>
+                                    <i style="color: #989898; cursor: pointer;" class="bi bi-emoji-smile emojiBtnCommentReply"></i>
                                     <i id="send-comment" data-post-id="<?php echo $post->id; ?>" class="bi bi-send-fill send-comments"></i>
                                 </div>
                             </div>
 
                             <div class="comments-container">
                                 <?php if (!empty($comments)) : ?>
-                                    <?php foreach ($comments as $comment) : ?>
+                                    <?php foreach ($comments as $key2 => $comment) : ?>
                                         <?php
                                         $comment_likes_dislikes = $commentObj->getCommentLikesDislikes($comment->id);
                                         $comment_likes = $comment_likes_dislikes->likes;
@@ -240,7 +270,8 @@ endif; ?>
                                                     </div>
                                                     <div class="comment-input reply-text-container w-100  reply-input">
                                                         <!-- <input type="text" class="w-100 bg-white " placeholder="Reply"> -->
-                                                        <textarea class="bg-white reply-textarea1" width="100" rows="1" placeholder="Reply"></textarea>
+                                                        <textarea id="emoji-text-p<?php echo $post->id; ?>c<?php echo $comment->id; ?>" class="bg-white reply-textarea1" width="100" rows="1" placeholder="Reply"></textarea>
+                                                        <i id="emoji-btn-p<?php echo $post->id; ?>c<?php echo $comment->id; ?>" style="color: #989898; cursor: pointer;" class="bi bi-emoji-smile emojiBtnCommentReply emoji-reply d-none"></i>
                                                         <i data-post-id="<?php echo $post->id; ?>" data-comment-id="<?php echo $comment->id; ?>" class="bi bi-send-fill send-reply d-none"></i>
                                                     </div>
                                                     <div class="reply-box">
@@ -277,10 +308,11 @@ endif; ?>
                                                                                 </svg>
                                                                                 <small class="reply-dislikes-count"><?php echo $reply_dislikes > 0 ? formatStats($reply_dislikes) : ''; ?></small>
                                                                             </span>
-                                                                            <button type="button" data-username="<?php echo $reply->username; ?>" class="f-14 text-primary w-500 ms-4 reply-btn">Reply</button>
+                                                                            <button type="button" data-username="<?php echo $reply->username; ?>" class="f-14 text-primary w-500 ms-4 reply-btn reply-btn-sub">Reply</button>
                                                                         </div>
                                                                         <div class="comment-input reply-text-container w-100  reply-input">
-                                                                            <textarea class="bg-white reply-textarea2" width="100" rows="1" placeholder="Reply"></textarea>
+                                                                            <textarea id="emoji-text-p<?php echo $post->id; ?>c<?php echo $comment->id; ?>sub" class="bg-white reply-textarea2" width="100" rows="1" placeholder="Reply"></textarea>
+                                                                            <i id="emoji-btn-p<?php echo $post->id; ?>c<?php echo $comment->id; ?>sub" style="color: #989898; cursor: pointer;" class="bi bi-emoji-smile emojiBtnCommentReply emoji-sub-reply d-none"></i>
                                                                             <i data-post-id="<?php echo $post->id; ?>" data-comment-id="<?php echo $comment->id; ?>" class="bi bi-send-fill send-reply sub-reply d-none"></i>
 
                                                                         </div>
@@ -460,6 +492,24 @@ include APPROOT . "/views/inc/footer.php";
                 xAlignMargin: margin
             })
 
+        function initEmojis() {
+            $(".emoji-reply, .emoji-sub-reply").each(function() {
+                var btnID = $(this).attr("id");
+                var textID = btnID.replace("btn", "text")
+                var instance = new emojiButtonList(btnID, {
+                    dropDownXAlign: "left",
+                    textBoxID: textID,
+                    yAlignMargin: margin,
+                    xAlignMargin: margin
+                })
+            })
+        }
+        initEmojis();
+
+        $(document).on("click", ".emoji-reply, .emoji-sub-reply", function() {
+            initEmojis()
+        });
+
         // ==================================upload
         let input = document.getElementById("inputTag");
         let imageName = document.getElementById("imageName")
@@ -505,7 +555,8 @@ include APPROOT . "/views/inc/footer.php";
                 </div>
                 <div class="comment-input reply-text-container w-100  reply-input">
                     <!-- <input type="text" class="w-100 bg-white " placeholder="Reply"> -->
-                    <textarea class="bg-white reply-textarea1" width="100" rows="1" placeholder="Reply"></textarea>
+                    <textarea id="emoji-text-p{post_id}c{comment_id}" class="bg-white reply-textarea1" width="100" rows="1" placeholder="Reply"></textarea>
+                    <i id="emoji-btn-p{post_id}c{comment_id}" style="color: #989898; cursor: pointer;" class="bi bi-emoji-smile emojiBtnCommentReply emoji-reply d-none"></i>
                     <i data-post-id="{post_id}" data-comment-id="{comment_id}" class="bi bi-send-fill send-reply d-none"></i>
                 </div>
                 <div class="reply-box"></div>
@@ -541,10 +592,11 @@ include APPROOT . "/views/inc/footer.php";
                     </svg>
                     <small class="reply-dislikes-count"></small>
                 </span>
-                <button type="button" data-username="{username}" class="f-14 text-primary w-500 ms-4 reply-btn">Reply</button>
+                <button type="button" data-username="{username}" class="f-14 text-primary w-500 ms-4 reply-btn reply-btn-sub">Reply</button>
             </div>
             <div class="comment-input reply-text-container w-100  reply-input">
-                <textarea class="bg-white reply-textarea2" width="100" rows="1" placeholder="Reply"></textarea>
+                <textarea id="emoji-text-p{post_id}c{comment_id}sub" class="bg-white reply-textarea2" width="100" rows="1" placeholder="Reply"></textarea>
+                <i id="emoji-btn-p{post_id}c{comment_id}sub" style="color: #989898; cursor: pointer;" class="bi bi-emoji-smile emojiBtnCommentReply emoji-sub-reply d-none"></i>
                 <i data-post-id="{post_id}" data-comment-id="{comment_id}" class="bi bi-send-fill send-reply sub-reply d-none"></i>
 
             </div>
@@ -554,6 +606,7 @@ include APPROOT . "/views/inc/footer.php";
 
 <script>
     const appURL = "<?php echo URLROOT; ?>";
+    const groupID = $("#group-id").val();
 
     $("body").on("keypress", ".comment-inputs", function(event) {
         if (event.keyCode === 13) {
@@ -578,10 +631,15 @@ include APPROOT . "/views/inc/footer.php";
             data: {
                 action: "add_comment",
                 postID,
-                comment
+                comment,
+                groupID
             },
             success: function(response) {
-                console.log(response);
+                if (response == "not_member") {
+                    alert("You have been removed from group");
+                    window.location.href = appURL + "/posts"
+                    return;
+                }
                 response = JSON.parse(response);
 
                 if (response.result !== "error") {
@@ -594,10 +652,19 @@ include APPROOT . "/views/inc/footer.php";
                         .replace("{comment}", comment)
                         .replace("{username}", username)
                         .replace("{image}", img)
-                        .replace("{post_id}", postID)
+                        .replaceAll("{post_id}", postID)
                         .replaceAll("{comment_id}", commentID);
                     postElement.find(".comments-container").prepend(html);
                     postElement.find(".comment-inputs").val("");
+
+                    var btnID = `emoji-btn-p${postID}c${commentID}`
+                    var textID = btnID.replace("btn", "text")
+                    var instance = new emojiButtonList(btnID, {
+                        dropDownXAlign: "left",
+                        textBoxID: textID,
+                        yAlignMargin: 0,
+                        xAlignMargin: 0
+                    })
                 } else {
                     alert("There is some error in adding comment!");
                 }
@@ -633,10 +700,15 @@ include APPROOT . "/views/inc/footer.php";
                 action: "add_reply",
                 postID,
                 commentID,
-                reply
+                reply,
+                groupID
             },
             success: function(response) {
-                console.log(response);
+                if (response == "not_member") {
+                    alert("You have been removed from group");
+                    window.location.href = appURL + "/posts"
+                    return;
+                }
                 response = JSON.parse(response);
 
                 if (response.result !== "error") {
@@ -650,11 +722,20 @@ include APPROOT . "/views/inc/footer.php";
                         .replace("{name}", username)
                         .replace("{username}", username)
                         .replace("{image}", img)
-                        .replace("{post_id}", postID)
-                        .replace("{comment_id}", commentID)
+                        .replaceAll("{post_id}", postID)
+                        .replaceAll("{comment_id}", commentID)
                         .replaceAll("{reply_id}", replyID);
                     replyContainer.append(html);
                     replyText.val("");
+
+                    var btnID = `emoji-btn-p${postID}c${commentID}sub`
+                    var textID = btnID.replace("btn", "text")
+                    var instance = new emojiButtonList(btnID, {
+                        dropDownXAlign: "left",
+                        textBoxID: textID,
+                        yAlignMargin: 0,
+                        xAlignMargin: 0
+                    })
 
                     postElement.find(".comments-container").markRegExp(/@(\w+)/g, {
                         className: "highlight"
@@ -693,9 +774,15 @@ include APPROOT . "/views/inc/footer.php";
             data: {
                 action: "like_post",
                 post_id: postID,
-                like_dislike: likeDislike
+                like_dislike: likeDislike,
+                groupID
             },
             success: function(response) {
+                if (response == "not_member") {
+                    alert("You have been removed from group");
+                    window.location.href = appURL + "/posts"
+                    return;
+                }
                 response = JSON.parse(response);
 
                 if (response.result) {
@@ -726,10 +813,15 @@ include APPROOT . "/views/inc/footer.php";
             data: {
                 action: "like_comment",
                 commentID,
-                like_dislike: likeDislike
+                like_dislike: likeDislike,
+                groupID
             },
             success: function(response) {
-                console.log(response);
+                if (response == "not_member") {
+                    alert("You have been removed from group");
+                    window.location.href = appURL + "/posts"
+                    return;
+                }
                 response = JSON.parse(response);
 
                 if (response.result) {
@@ -760,10 +852,15 @@ include APPROOT . "/views/inc/footer.php";
             data: {
                 action: "like_reply",
                 replyID,
-                like_dislike: likeDislike
+                like_dislike: likeDislike,
+                groupID
             },
             success: function(response) {
-                console.log(response);
+                if (response == "not_member") {
+                    alert("You have been removed from group");
+                    window.location.href = appURL + "/posts"
+                    return;
+                }
                 response = JSON.parse(response);
 
                 if (response.result) {
@@ -805,8 +902,6 @@ include APPROOT . "/views/inc/footer.php";
 </script>
 
 <script>
-    const groupID = $("#group-id").val();
-
     // Add Peers
     $(".add-peer-btn").click(function() {
         if ($("#addPeer").find(".no-peer").length) {

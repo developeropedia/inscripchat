@@ -1,6 +1,7 @@
 <?php
   class Comments extends Controller {
     private $commentsModel;
+    private $groupsModel;
 
     public function __construct(){
         if (!isset($_SESSION['user_id'])) {
@@ -8,6 +9,7 @@
         }
 
         $this->commentsModel = $this->model("Comment");
+        $this->groupsModel = $this->model("Group");
     }
     
     public function index()
@@ -23,6 +25,12 @@
       $action = $_POST['action'];
 
       if($action === "add_comment") {
+
+        if(!$this->groupsModel->isGroupMember($_SESSION['user_id'], $_POST['groupID'])) {
+          echo "not_member";
+          die();
+        }
+
         $post_id = $_POST['postID'];
         $comment = $_POST['comment'];
 
@@ -40,6 +48,11 @@
         $action = $_POST['action'];
 
         if ($action === "add_reply") {
+            if (!$this->groupsModel->isGroupMember($_SESSION['user_id'], $_POST['groupID'])) {
+              echo "not_member";
+              die();
+            }
+
             $post_id = $_POST['postID'];
             $comment_id = $_POST['commentID'];
             $reply = $_POST['reply'];
@@ -58,6 +71,11 @@
       $action = $_POST['action'];
 
       if ($action === "like_comment") {
+        if (!$this->groupsModel->isGroupMember($_SESSION['user_id'], $_POST['groupID'])) {
+          echo "not_member";
+          die();
+        }
+
         $comment_id = $_POST['commentID'];
         $like_dislike = $_POST['like_dislike'];
 
@@ -75,6 +93,11 @@
       $action = $_POST['action'];
 
       if ($action === "like_reply") {
+        if (!$this->groupsModel->isGroupMember($_SESSION['user_id'], $_POST['groupID'])) {
+          echo "not_member";
+          die();
+        }
+
         $reply_id = $_POST['replyID'];
         $like_dislike = $_POST['like_dislike'];
 

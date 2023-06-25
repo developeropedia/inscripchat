@@ -18,4 +18,12 @@
     public function pageNotFound() {
       $this->view("pages/404.php", ["title" => "404 | Page not found"]);
     }
+
+    public function privacyPolicy() {
+      $this->view("pages/privacy-policy", ["title" => "Privacy Policy"]);
+    }
+
+  public function terms() {
+    $this->view("pages/terms", ["title" => "Terms and Conditions"]);
+  }
   }

@@ -102,6 +102,12 @@
 
     public function isGroupMember($user_id, $group_id)
     {
+        if(ADMIN_ID === $user_id) {
+            return true;
+        }
+        if($user_id === $this->group($group_id)->owner_id) {
+            return true;
+        }
         $query = "SELECT * FROM group_members WHERE user_id = :user_id AND group_id = :group_id";
         $this->db->query($query);
         $this->db->bind(':user_id', $user_id);

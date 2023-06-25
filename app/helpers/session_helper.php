@@ -8,7 +8,7 @@ function flash($name = "", $message = "", $class = "successMsg") {
             $_SESSION[$name] = $message;
         }
 
-        $icons = ["successMsg" => "<i style='color: #00D26A' class='bi bi-check-circle-fill'></i>", "errorMsg" => "<i class='bi bi-x-circle-fill'></i>"];
+        $icons = ["successMsg" => "<i style='color: #00D26A' class='bi bi-check-circle-fill'></i>", "errorMsg" => "<i style='color: #ff4d40' class='bi bi-x-circle-fill'></i>"];
 
         if(empty($message) && !empty($_SESSION[$name])) {
             echo "<div class='$class' id='msg-flash'>$icons[$class] &nbsp $_SESSION[$name]</div>";

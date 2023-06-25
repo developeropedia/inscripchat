@@ -50,6 +50,14 @@
       }
     }
 
+    public function updateToken($token, $email) {
+      $query = "UPDATE users SET confirmation_token = :token WHERE email = :email";
+      $this->db->query($query);
+      $this->db->bind(":token", $token);
+      $this->db->bind(":email", $email);
+      $this->db->execute();
+    }
+
     // Find USer BY Email
     public function findUserByUsername($username){
         $this->db->query("SELECT *, courses.name as course FROM users INNER JOIN courses ON courses.id = users.course WHERE username = :username");
@@ -383,5 +391,20 @@
       $this->db->bind(":institution", $institution);
 
       return $this->db->execute();
+    }
+
+    public function confirmEmail($token) {
+      $query = "SELECT id FROM users WHERE confirmation_token = :token LIMIT 1";
+      $this->db->query($query);
+      $this->db->bind(":token", $token);
+      $this->db->execute();
+      return $this->db->single();
+    }
+
+    public function updateConfirmed($id) {
+      $query = "UPDATE users SET is_confirmed = 1, confirmation_token = null WHERE id = :id";
+      $this->db->query($query);
+      $this->db->bind(":id", $id);
+      $this->db->execute();
     }
 }
