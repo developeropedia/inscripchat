@@ -2,3 +2,4 @@ uploads/
 .vscode/
 public/images/
 vendor/
+app/config/config.php
