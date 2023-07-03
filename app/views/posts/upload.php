@@ -13,7 +13,10 @@ if (isset($_POST['title'])) {
 
     if ($type == "pdf") {
         $type = "pdf";
-    } else {
+    } elseif($type == "mp4") {
+        $type = "video";
+    }
+     else {
         $type = "image";
     }
 
@@ -60,7 +63,7 @@ if (isset($_POST['title'])) {
                         <h2 class="text-primary">Upload file</h2>
 
                         <span class=" btn-file d-flex align-items-center text-center justify-content-center">
-                            Drag file here or <div class="text-primary"> &nbsp; browse</div><input type="file" accept="image/jpg, image/jpeg, image/png, application/pdf">
+                            Drag file here or <div class="text-primary"> &nbsp; browse</div><input type="file" accept="image/jpg, image/jpeg, image/png, application/pdf, video/mp4">
                         </span>
                         <p class="f-12 w-400">Supported file types: JPG, JPEG, PNG, PDF</p>
                     </div>
@@ -103,7 +106,8 @@ include APPROOT . "/views/inc/footer.php";
                 'image/jpeg': true,
                 'image/jpg': true,
                 'image/gif': true,
-                'application/pdf': true
+                'application/pdf': true,
+                'video/mp4': true
             };
 
         // Function to show messages
@@ -166,6 +170,7 @@ include APPROOT . "/views/inc/footer.php";
                 progress: function(e) {
                     if (e.lengthComputable) {
                         var pct = (e.loaded / e.total) * 100;
+                        pct = Math.ceil(pct)
                         $('.progress-bar').css({
                             "width": pct + "%"
                         });

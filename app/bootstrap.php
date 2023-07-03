@@ -8,7 +8,7 @@
   require_once 'helpers/mail_helper.php';
 
   define('QUALIFICATION', ["Undergraduate", "Postgraduate"]);
-  define('ADMIN_ID', 19);
+  define('ADMIN_ID', 29);
   define('POSTS_PER_PAGE', 10);
 
   // Autoload Classes

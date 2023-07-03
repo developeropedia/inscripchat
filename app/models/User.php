@@ -96,7 +96,7 @@
       $row = $this->db->single();
       
       $hashed_password = $row->password;
-      if(password_verify($data["password"], $hashed_password)){
+      if(password_verify($data["password"], $hashed_password) && $row->is_confirmed == 1){
         return $row;
       } else {
         return false;

@@ -41,24 +41,41 @@ $(".successfull-btn-left").click(function () {
         $(".verification-message-left").css("display", "none");
     }, 2000);
 });
+
 // ====================================video play/pause
-var vid = document.getElementById("video");
-function playVid() {
-    vid.play();
-}
-
-function pauseVid() {
-    vid.pause();
-}
-$(".play-btn-div").on("click", function () {
-    $(this).css("display", "none");
-    $(".pause-btn-div").css("display", "block");
-
+$(document).on("click", ".play-btn-div, .play-btn-div2", function() {
+    $(this).css("display", "none")
+    var vidMain = $(this).parents(".main-video-div")
+    vidMain.find(".pause-btn-div").css("display", "block")
+    vidMain.find(".pause-btn-div2").css("display", "block")
+    vidMain.find("video")[0].play()
 })
-$(".pause-btn-div").on("click", function () {
-    $(this).css("display", "none");
-    $(".play-btn-div").css("display", "block");
+
+$(document).on("click", ".pause-btn-div, .pause-btn-div2", function () {
+    $(this).css("display", "none")
+    var vidMain = $(this).parents(".main-video-div")
+    vidMain.find(".play-btn-div").css("display", "block")
+    vidMain.find(".play-btn-div2").css("display", "block")
+    vidMain.find("video")[0].pause()
 })
+
+// var vid = document.getElementById("video");
+// function playVid() {
+//     vid.play();
+// }
+
+// function pauseVid() {
+//     vid.pause();
+// }
+// $(".play-btn-div").on("click", function () {
+//     $(this).css("display", "none");
+//     $(".pause-btn-div").css("display", "block");
+
+// })
+// $(".pause-btn-div").on("click", function () {
+//     $(this).css("display", "none");
+//     $(".play-btn-div").css("display", "block");
+// })
 
 
 // var vid = document.getElementById("video2");

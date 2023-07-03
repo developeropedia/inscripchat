@@ -43,8 +43,9 @@
       $posts = $this->postsModel->getPosts(0, true, 5);
       $comments = $this->commentsModel->getPostComments($id);
       $peers = $this->usersModel->getAddedPeers();
+      $user = $this->usersModel->getUserById($_SESSION['user_id']);
 
-      $this->view("posts/post", ["title" => "InscripChat", "post" => $post, "posts" => $posts, "comments" => $comments, "groups" => $groups, "peers" => $peers]);
+      $this->view("posts/post", ["title" => "InscripChat", "post" => $post, "posts" => $posts, "comments" => $comments, "groups" => $groups, "peers" => $peers, "user" => $user]);
     }
 
     public function fetch()
@@ -107,7 +108,7 @@
         $img = '';
         $file = '';
         $dir = '../public/uploads/';
-        $extensions = array("jpeg", "jpg", "png", "pdf", "jfif");
+        $extensions = array("jpeg", "jpg", "png", "pdf", "jfif", "mp4");
         foreach ($_FILES['img_file']['tmp_name'] as $key => $tmp_name) {
           $file_name = $_FILES['img_file']['name'][$key];
           $file_size = $_FILES['img_file']['size'][$key];

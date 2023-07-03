@@ -14,7 +14,7 @@ $totalMonthlyUsers = $data['totalMonthlyUsers'];
     <div class="p-20">
         <div class="d-flex justify-content-between align-items-center flex-wrap">
             <div>
-                <p class="mb-0 pb-0 text-dark-light f-16 w-500">Good Morning <?php echo $_SESSION['user_name']; ?>!</p>
+                <p class="mb-0 pb-0 text-dark-light f-16 w-500">Welcome, <?php echo $_SESSION['user_name']; ?>!</p>
                 <p class="f-14 text-gray mb-0 pb-0 f-14 ">Here's what's happening with your website today.
                 </p>
             </div>

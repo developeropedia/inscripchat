@@ -726,9 +726,20 @@ body {
   height: 100% !important; }
 
 .main-video-div {
-  position: relative; }
+  position: relative;
+}
+ 
+.main-video2 {
+  border-radius: 3px;
+  border: 2px solid #AAA5A5;
+  box-shadow: 0 0 0rem #fff, inset 0 0 0.5rem #fff, 0 0 0.4rem var(--primary), inset 0 0 0.5rem var(--primary), 0 0 0.4rem var(--primary), inset 0 0 0.5rem var(--primary);
+  height: 200px !important;
+}
+
 
 @media only screen and (max-width: 767px) {
+
+  
   .main-video-col {
     padding: 0px !important; } }
 
@@ -1749,4 +1760,20 @@ body {
     .menu-icon button i {
       color: black !important;
         font-size: 16px !important;
+    }
+
+    main {
+        min-height: calc(100vh - (70px + 42px));
+    }
+
+    .menu-icon {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      z-index: 40;
+      color: white;
+    }
+
+    .post-link:hover {
+      color: #000000;
     }

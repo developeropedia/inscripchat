@@ -9,20 +9,20 @@ $peers = $data["peers"];
 $groups = $data["groups"];
 $postsMain = $posts;
 
-$imagePost = "";
-if (!empty($posts)) {
-    $imagePosts = array_filter($posts, function ($post) {
-        return $post->type === 'image';
-    });
+// $imagePost = "";
+// if (!empty($posts)) {
+//     $imagePosts = array_filter($posts, function ($post) {
+//         return $post->type === 'image';
+//     });
 
-    $imagePost = current($imagePosts);
+//     $imagePost = current($imagePosts);
 
-    if (!empty($imagePost)) {
-        $posts = array_filter($posts, function ($post) use ($imagePost) {
-            return $post !== $imagePost;
-        });
-    }
-}
+//     if (!empty($imagePost)) {
+//         $posts = array_filter($posts, function ($post) use ($imagePost) {
+//             return $post !== $imagePost;
+//         });
+//     }
+// }
 
 ?>
 
@@ -46,57 +46,126 @@ if (!empty($posts)) {
         </div>
         <div class="col-lg-11 mx-auto">
             <div class="row posts">
-                <?php if (!empty($imagePost)) : ?>
-                    <div class="col-lg-12 mb-4 main-video-col">
-                        <div class="main-img-full w-100">
-                            <a href="<?php echo URLROOT; ?>/posts/post/<?php echo $imagePost->id; ?>">
-                                <img src="<?php echo URLROOT; ?>/public/uploads/<?php echo $imagePost->content; ?>" alt="" class="w-100">
-                            </a>
-                            <?php if ($imagePost->author_id == $_SESSION['user_id']) : ?>
-                                <div class="menu-icon">
-                                    <div class="dropdown ">
-                                        <button type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="bi bi-three-dots-vertical text-white"></i>
-                                        </button>
-                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                            <li class="text-center p-0"><a href="<?php echo URLROOT; ?>/posts/delete/<?php echo $imagePost->id; ?>" class="dropdown-item text-center w-100 p-0">Delete</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            <?php else : ?>
-                            <?php endif; ?>
-                        </div>
-                        <div class="d-flex justify-content-between px-1 ">
-                            <h2 class="second-heading py-1 ellipsis-1"><?php echo $imagePost->title; ?></h2>
-                            <h2 class="second-heading py-1 ellipsis-1"><?php echo formatStats($imagePost->views); ?> Views</h2>
-                        </div>
-                    </div>
-                <?php endif; ?>
                 <?php if (!empty($posts)) : ?>
-                    <?php foreach ($posts as $post) : ?>
-                        <div class="col-lg-4 col-md-6 col-sm-10 col-12 mx-auto mb-3 ">
-                            <div class="<?php echo $post->type == 'pdf' ? 'doc-img' : 'main-img'; ?> w-100">
-                                <a href="<?php echo URLROOT; ?>/posts/post/<?php echo $post->id; ?>" class="no-decoration">
-                                    <img src="<?php echo URLROOT; ?>/public/uploads/<?php echo $post->type == 'pdf' ? 'adobe pdf 1.png' : $post->content; ?>" alt="" class="w-100">
-                                </a>
-                                <?php if ($post->author_id == $_SESSION['user_id']) : ?>
+                    <div class="col-lg-12 mb-4 main-video-col">
+                        <?php if ($posts[0]->type == "video") : ?>
+                            <div class="main-video-div">
+                                <video controls width="100%" class="main-video" id="video">
+                                    <source src="<?php echo URLROOT; ?>/public/uploads/<?php echo $posts[0]->content; ?>" type="video/mp4">
+
+                                </video>
+                                <?php if ($posts[0]->author_id == $_SESSION['user_id']) : ?>
                                     <div class="menu-icon">
                                         <div class="dropdown ">
-                                            <button type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <button type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                                                 <i class="bi bi-three-dots-vertical text-white"></i>
                                             </button>
-                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
-                                                <li class="text-center p-0"><a href="<?php echo URLROOT; ?>/posts/delete/<?php echo $post->id; ?>" class="dropdown-item text-center w-100 p-0">Delete</a></li>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                                <li class="text-center p-0"><a href="<?php echo URLROOT; ?>/posts/delete/<?php echo $posts[0]->id; ?>" class="dropdown-item text-center w-100 p-0">Delete</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                <?php else : ?>
+                                <?php endif; ?>
+                                <div class="play-btn-div">
+                                    <div class="play-btn">
+                                    </div>
+                                </div>
+                                <div class="pause-btn-div">
+                                    <div class="pause-btn">
+                                    </div>
+                                </div>
+                            </div>
+                        <?php else : ?>
+                            <div class="main-img-full w-100">
+                                <a href="<?php echo URLROOT; ?>/posts/post/<?php echo $posts[0]->id; ?>">
+                                    <?php if ($posts[0]->type === "image") : ?>
+                                        <img src="<?php echo URLROOT; ?>/public/uploads/<?php echo $posts[0]->content; ?>" alt="" class="w-100 mb-1">
+                                    <?php else : ?>
+                                        <iframe src="<?php echo URLROOT; ?>/public/uploads/<?php echo $posts[0]->content; ?>#toolbar=0&navpanes=0" frameborder="0" width="100%" height="500px"></iframe>
+                                    <?php endif; ?>
+                                </a>
+                                <?php if ($posts[0]->author_id == $_SESSION['user_id']) : ?>
+                                    <div class="menu-icon">
+                                        <div class="dropdown ">
+                                            <button type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="bi bi-three-dots-vertical text-white"></i>
+                                            </button>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                                <li class="text-center p-0"><a href="<?php echo URLROOT; ?>/posts/delete/<?php echo $posts[0]->id; ?>" class="dropdown-item text-center w-100 p-0">Delete</a></li>
                                             </ul>
                                         </div>
                                     </div>
                                 <?php else : ?>
                                 <?php endif; ?>
                             </div>
-                            <div class="d-flex justify-content-between align-items-center px-1 mb-2 mt-2">
-                                <h2 class="f-14 w-500  ellipsis-1 pt-0 mt-0"><?php echo $post->title; ?></h2>
-                                <h2 class="f-12 w-500  pb-0 pt-0 mt-0 ellipsis-1"><?php echo formatStats($post->views); ?> Views</h2>
+                        <?php endif; ?>
+                        <a class="no-decoration" href="<?php echo URLROOT; ?>/posts/post/<?php echo $posts[0]->id; ?>">
+                            <div class="d-flex justify-content-between px-1 ">
+                                <h2 class="second-heading py-1 ellipsis-1"><?php echo $posts[0]->title; ?></h2>
+                                <h2 class="second-heading py-1 ellipsis-1"><?php echo formatStats($posts[0]->views); ?> Views</h2>
                             </div>
+                        </a>
+                    </div>
+                    <?php unset($posts[0]) ?>
+                <?php endif; ?>
+                <?php if (!empty($posts)) : ?>
+                    <?php foreach ($posts as $post) : ?>
+                        <div class="col-lg-4 col-md-6 col-sm-10 col-12 mx-auto mb-3 ">
+                            <?php if ($post->type == "video") : ?>
+                                <div class="main-video-div main-video2 d-flex justify-content-center align-items-center">
+                                    <video controls width="100%" class="" id="video2">
+                                        <source src="<?php echo URLROOT; ?>/public/uploads/<?php echo $post->content; ?>" type="video/mp4">
+
+                                    </video>
+                                    <?php if ($post->author_id == $_SESSION['user_id']) : ?>
+                                        <div class="menu-icon">
+                                            <div class="dropdown ">
+                                                <button type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="bi bi-three-dots-vertical text-white"></i>
+                                                </button>
+                                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                                    <li class="text-center p-0"><a href="<?php echo URLROOT; ?>/posts/delete/<?php echo $post->id; ?>" class="dropdown-item text-center w-100 p-0">Delete</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    <?php else : ?>
+                                    <?php endif; ?>
+                                    <div class="play-btn-div2">
+                                        <div class="play-btn2">
+                                        </div>
+                                    </div>
+                                    <div class="pause-btn-div2">
+                                        <div class="pause-btn2">
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php else : ?>
+                                <div class="<?php echo $post->type == 'pdf' ? 'doc-img' : 'main-img'; ?> w-100">
+                                    <a href="<?php echo URLROOT; ?>/posts/post/<?php echo $post->id; ?>" class="no-decoration">
+                                        <img src="<?php echo URLROOT; ?>/public/uploads/<?php echo $post->type == 'pdf' ? 'adobe pdf 1.png' : $post->content; ?>" alt="" class="w-100">
+                                    </a>
+                                    <?php if ($post->author_id == $_SESSION['user_id']) : ?>
+                                        <div class="menu-icon">
+                                            <div class="dropdown ">
+                                                <button type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="bi bi-three-dots-vertical text-white"></i>
+                                                </button>
+                                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+                                                    <li class="text-center p-0"><a href="<?php echo URLROOT; ?>/posts/delete/<?php echo $post->id; ?>" class="dropdown-item text-center w-100 p-0">Delete</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    <?php else : ?>
+                                    <?php endif; ?>
+                                </div>
+                            <?php endif; ?>
+                            <a href="<?php echo URLROOT; ?>/posts/post/<?php echo $post->id; ?>" class="no-decoration post-link">
+                                <div class="d-flex justify-content-between align-items-center px-1 mb-2 mt-2">
+                                    <h2 class="f-14 w-500  ellipsis-1 pt-0 mt-0"><?php echo $post->title; ?></h2>
+                                    <h2 class="f-12 w-500  pb-0 pt-0 mt-0 ellipsis-1"><?php echo formatStats($post->views); ?> Views</h2>
+                                </div>
+                            </a>
                         </div>
                     <?php endforeach; ?>
                 <?php endif; ?>
@@ -450,7 +519,8 @@ include APPROOT . "/views/inc/footer.php";
                     }
                     isLoading = false;
                 },
-                error: function() {
+                error: function(response) {
+                    console.log(response)
                     $('.posts').append('<p>Error loading posts.</p>');
                     isLoading = false;
                 }
@@ -486,6 +556,7 @@ include APPROOT . "/views/inc/footer.php";
                     if (response) {
                         var addedPeers = $("#addPeer .add-peers-list:has(:checkbox:checked)").map(function() {
                             // Uncheck the checkbox
+                            $(this).addClass("group-peers-list")
                             $(this).find(':checkbox').prop('checked', false);
                             return this;
                         }).get();
@@ -587,9 +658,13 @@ include APPROOT . "/views/inc/footer.php";
                 alert("Please enter group name")
                 return;
             }
+
+            console.log($("#createGroup .group-peers-list"));
             var groupPeers = $("#createGroup .group-peers-list:has(:checkbox:checked)").map(function() {
                 return $(this).data("peer-id");
             }).get();
+
+            console.log(groupPeers);
 
             if (!groupPeers.length) {
                 alert("No peers to add")

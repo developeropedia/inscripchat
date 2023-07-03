@@ -10,7 +10,8 @@ $courses = $course->getCourses();
 
 <body class="sign-body">
     <div class="d-flex h-100 w-100">
-        <form enctype="multipart/form-data" action="<?php echo URLROOT; ?>/users/register" method="post" class="sign-form w-100">
+
+        <form method="POST" enctype="multipart/form-data" class="sign-form w-100">
             <div class="w-60  h-100">
                 <img src="<?php echo URLROOT; ?>/public/images/LogIn.png" alt="" class=" w-100 sign-img">
                 <img src="<?php echo URLROOT; ?>/public/images/logo.png" alt="" class="logo img-fluid">
@@ -83,11 +84,13 @@ $courses = $course->getCourses();
     </div>
 
 
-    <?php
+    <div style="position: sticky; z-index: 1000;">
+        <?php
 
-    include APPROOT . "/views/inc/footer.php";
+        include APPROOT . "/views/inc/footer.php";
 
-    ?>
+        ?>
+    </div>
 
     <script>
         $(document).ready(function() {

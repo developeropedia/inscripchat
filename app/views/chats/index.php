@@ -23,7 +23,7 @@ $chatObj = new Chat;
                     <div class="px-1">
                         <div class="profile-details">
                             <div class="profile-img">
-                                <img src="<?php echo URLROOT ?>/public/images/image 1.png" alt="">
+                                <img src="<?php echo URLROOT ?>/public/images/<?php echo $user->img; ?>" alt="">
                             </div>
                             <div>
                                 <h1 class="m-0 p-0"><?php echo $user->userName; ?></h1>

@@ -104,4 +104,40 @@
     $chat = $this->chatModel->getChat($_GET['s'], $_GET['r']);
     $this->view("admin/chat", ["title" => "Dashboard", "chat" => $chat, "active" => "peers"]);
   }
+
+  public function courses() {
+    $courses = $this->courseModel->getCourses();
+    $this->view("admin/courses", ["title" => "Dashboard", "courses" => $courses, "active" => "courses"]);
+  }
+
+  public function add_course() {
+    $this->view("admin/add_course", ["title" => "Dashboard", "active" => "courses"]);
+  }
+
+  public function edit_course($id) {
+    $course = $this->courseModel->getCourseById($id);
+    $this->view("admin/edit_course", ["title" => "Dashboard", "course" => $course, "active" => "courses"]);
+  }
+
+  public function addCourse() {
+    $course_data = $_POST;
+
+    $res = $this->courseModel->addCourse($course_data);
+    flash("course_added", "Course has been added!");
+    redirect("admin/courses");
+  }
+
+  public function editCourse() {
+    $course_data = $_POST;
+
+    $res = $this->courseModel->editCourse($course_data);
+    flash("course_edited", "Course has been updated!");
+    redirect("admin/edit_course/" . $course_data['id']);
+  }
+
+  public function delete_course($id) {
+    $this->courseModel->deleteCourse($id);
+    flash("delete_course", "Course has been deleted");
+    redirect("admin/courses");
+  }
 }

@@ -10,7 +10,7 @@
 
     public function group($id)
     {
-        $this->db->query('SELECT * FROM groups WHERE id = :id');
+        $this->db->query('SELECT * FROM `groups` WHERE id = :id');
         $this->db->bind(':id', $id);
         return $this->db->single();
     }
@@ -19,7 +19,7 @@
     public function getRecentGroups() {
         $user_id = $_SESSION['user_id'];
         $query = "SELECT DISTINCT g.id, g.name, pc.comment, pc.created_at, p.content, p.id AS postID
-        FROM groups g
+        FROM `groups` g
         LEFT JOIN posts p ON g.id = p.group_id
         LEFT JOIN (
             SELECT pc.post_id, MAX(pc.created_at) AS latest_comment_date
@@ -28,12 +28,13 @@
         ) AS latest_comments ON p.id = latest_comments.post_id
         LEFT JOIN post_comments pc ON p.id = pc.post_id AND latest_comments.latest_comment_date = pc.created_at
         LEFT JOIN group_members gm ON g.id = gm.group_id
-        WHERE g.owner_id = :user_id OR gm.user_id = :user_id
+        WHERE g.owner_id = :user_id OR gm.user_id = :user_id OR :user_id = :admin_id
         GROUP BY g.id
         ORDER BY latest_comments.latest_comment_date DESC;";
 
         $this->db->query($query);
         $this->db->bind(':user_id', $user_id);
+        $this->db->bind(":admin_id", ADMIN_ID);
         return $this->db->resultSet();
     }
 
@@ -44,9 +45,9 @@
         LEFT JOIN (SELECT post_id, COUNT(*) AS views
         FROM post_views
         GROUP BY post_id) pv ON posts.id = pv.post_id
-        INNER JOIN groups ON groups.id = posts.group_id
+        INNER JOIN `groups` ON `groups`.id = posts.group_id
         LEFT JOIN post_likes pl ON posts.id = pl.post_id
-        WHERE groups.id = $group_id ORDER BY groups.created_at DESC";
+        WHERE `groups`.id = $group_id ORDER BY `groups`.created_at DESC";
         $query .= $limit !== 0 ? " LIMIT $limit" : "";
         $query .= $offset !== 0 ? " OFFSET $offset" : "";
 
@@ -58,7 +59,7 @@
 
     public function create($peer_ids, $group_name)
     {
-        $query = "INSERT INTO groups (owner_id, name) VALUES (:owner_id, :name)";
+        $query = "INSERT INTO `groups` (owner_id, name) VALUES (:owner_id, :name)";
         $this->db->query($query);
         $this->db->bind(':owner_id', $_SESSION['user_id']);
         $this->db->bind(':name', $group_name);
@@ -200,7 +201,7 @@
 
     public function deleteGroup($group_id)
     {
-        $query = "DELETE FROM groups WHERE id = :id";
+        $query = "DELETE FROM `groups` WHERE id = :id";
         $this->db->query($query);
         $this->db->bind(":id", $group_id);
         return $this->db->execute();

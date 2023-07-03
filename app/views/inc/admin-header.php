@@ -204,6 +204,14 @@
                                     <span class="menu-title">Upload</span>
                                 </a>
                             </li>
+                            <li class="menu-item">
+                                <a href="<?php echo URLROOT; ?>/admin/courses" class="<?php echo $data['active'] == 'courses' ? 'active-tab' : ''; ?>">
+                                    <span class="menu-icon">
+                                        <i class="bi bi-book"></i>
+                                    </span>
+                                    <span class="menu-title">Courses</span>
+                                </a>
+                            </li>
 
                         </ul>
                     </nav>

@@ -8,6 +8,7 @@ $postMain = $data["post"];
 $comments = $data["comments"];
 $groups = $data["groups"];
 $peers = $data["peers"];
+$user = $data["user"];
 
 $commentObj = new Comment;
 
@@ -19,31 +20,65 @@ $commentObj = new Comment;
             <div class="col-lg-3 mt-4 order-last order-lg-first">
                 <div class="row">
                     <?php if (!empty($posts)) : ?>
-                        <?php foreach ($posts as $post) : ?>
+                        <?php foreach ($posts as $post) :
+                            if ($post->id === $postMain->id || $post->type == "text") continue;
+                        ?>
                             <div class="col-lg-12 col-md-6 col-sm-8 mx-auto col-12">
                                 <div>
-                                    <div class="main-img-sm w-100">
-                                        <a href="<?php echo URLROOT; ?>/posts/post/<?php echo $post->id; ?>" class="no-decoration">
-                                            <img src="<?php echo URLROOT; ?>/public/uploads/<?php echo $post->type == 'pdf' ? 'adobe pdf 1.png' : $post->content; ?>" alt="" class="w-100">
-                                        </a>
-                                        <?php if ($post->author_id == $_SESSION['user_id']) : ?>
-                                            <div class="menu-icon">
-                                                <div class="dropdown ">
-                                                    <button type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
-                                                        <i class="bi bi-three-dots-vertical text-white"></i>
-                                                    </button>
-                                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
-                                                        <li class="text-center p-0"><a href="<?php echo URLROOT; ?>/posts/delete/<?php echo $post->id; ?>" class="dropdown-item text-center w-100 p-0">Delete</a></li>
-                                                    </ul>
+                                    <?php if ($post->type == "video") : ?>
+                                        <div class="main-video-div">
+                                            <video controls width="100%" class="main-video" id="video2">
+                                                <source src="<?php echo URLROOT; ?>/public/uploads/<?php echo $post->content; ?>" type="video/mp4">
+
+                                            </video>
+                                            <?php if ($post->author_id == $_SESSION['user_id']) : ?>
+                                                <div class="menu-icon">
+                                                    <div class="dropdown ">
+                                                        <button type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                                            <i class="bi bi-three-dots-vertical text-white"></i>
+                                                        </button>
+                                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                                            <li class="text-center p-0"><a href="<?php echo URLROOT; ?>/posts/delete/<?php echo $post->id; ?>" class="dropdown-item text-center w-100 p-0">Delete</a></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            <?php else : ?>
+                                            <?php endif; ?>
+                                            <div class="play-btn-div2">
+                                                <div class="play-btn2">
                                                 </div>
                                             </div>
-                                        <?php else : ?>
-                                        <?php endif; ?>
-                                    </div>
-                                    <div class="d-flex justify-content-between align-items-center px-1 mb-2 mt-2">
-                                        <h2 class="f-14 w-500  ellipsis-1 pt-0 mt-0"><?php echo $post->title; ?> </h2>
-                                        <h2 class="f-12 w-500 ellipsis-1  pb-0 pt-0 mt-0"><?php echo formatStats($post->views); ?> Views</h2>
-                                    </div>
+                                            <div class="pause-btn-div2">
+                                                <div class="pause-btn2">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php else : ?>
+                                        <div class="main-img-sm w-100">
+                                            <a href="<?php echo URLROOT; ?>/posts/post/<?php echo $post->id; ?>" class="no-decoration">
+                                                <img src="<?php echo URLROOT; ?>/public/uploads/<?php echo $post->type == 'pdf' ? 'adobe pdf 1.png' : $post->content; ?>" alt="" class="w-100">
+                                            </a>
+                                            <?php if ($post->author_id == $_SESSION['user_id']) : ?>
+                                                <div class="menu-icon">
+                                                    <div class="dropdown ">
+                                                        <button type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
+                                                            <i class="bi bi-three-dots-vertical text-white"></i>
+                                                        </button>
+                                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+                                                            <li class="text-center p-0"><a href="<?php echo URLROOT; ?>/posts/delete/<?php echo $post->id; ?>" class="dropdown-item text-center w-100 p-0">Delete</a></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            <?php else : ?>
+                                            <?php endif; ?>
+                                        </div>
+                                    <?php endif; ?>
+                                    <a href="<?php echo URLROOT; ?>/posts/post/<?php echo $post->id; ?>" class="no-decoration post-link">
+                                        <div class="d-flex justify-content-between align-items-center px-1 mb-2 mt-2">
+                                            <h2 class="f-14 w-500  ellipsis-1 pt-0 mt-0"><?php echo $post->title; ?></h2>
+                                            <h2 class="f-12 w-500  pb-0 pt-0 mt-0 ellipsis-1"><?php echo formatStats($post->views); ?> Views</h2>
+                                        </div>
+                                    </a>
                                 </div>
                             </div>
                         <?php endforeach; ?>
@@ -54,27 +89,57 @@ $commentObj = new Comment;
             <div class="col-lg-8 mt-4 ms-auto order-first order-lg-last">
                 <?php if (!empty($postMain)) : ?>
                     <div class=" main-video-col">
-                        <div class="main-img-full w-100">
-                            <?php if ($postMain->type === "image") : ?>
-                                <img src="<?php echo URLROOT; ?>/public/uploads/<?php echo $postMain->content; ?>" alt="" class="w-100 mb-1">
-                            <?php else : ?>
-                                <iframe src="<?php echo URLROOT; ?>/public/uploads/<?php echo $postMain->content; ?>" frameborder="0" width="100%" height="500px"></iframe>
-                            <?php endif; ?>
-                            <?php if ($postMain->author_id == $_SESSION['user_id']) : ?>
-                                <div class="menu-icon">
-                                    <div class="dropdown ">
-                                        <button type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="bi bi-three-dots-vertical text-white"></i>
-                                        </button>
-                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                            <li class="text-center p-0"><a href="<?php echo URLROOT; ?>/posts/delete/<?php echo $postMain->id; ?>" class="dropdown-item text-center w-100 p-0">Delete</a></li>
-                                        </ul>
+                        <?php if ($postMain->type == "video") : ?>
+                            <div class="main-video-div">
+                                <video controls width="100%" class="main-video" id="video">
+                                    <source src="<?php echo URLROOT; ?>/public/uploads/<?php echo $postMain->content; ?>" type="video/mp4">
+
+                                </video>
+                                <?php if ($postMain->author_id == $_SESSION['user_id']) : ?>
+                                    <div class="menu-icon">
+                                        <div class="dropdown ">
+                                            <button type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="bi bi-three-dots-vertical text-white"></i>
+                                            </button>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                                <li class="text-center p-0"><a href="<?php echo URLROOT; ?>/posts/delete/<?php echo $postMain->id; ?>" class="dropdown-item text-center w-100 p-0">Delete</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                <?php else : ?>
+                                <?php endif; ?>
+                                <div class="play-btn-div">
+                                    <div class="play-btn">
                                     </div>
                                 </div>
-                            <?php else : ?>
-                            <?php endif; ?>
+                                <div class="pause-btn-div">
+                                    <div class="pause-btn">
+                                    </div>
+                                </div>
+                            </div>
+                        <?php else : ?>
+                            <div class="main-img-full w-100">
+                                <?php if ($postMain->type === "image") : ?>
+                                    <img src="<?php echo URLROOT; ?>/public/uploads/<?php echo $postMain->content; ?>" alt="" class="w-100 mb-1">
+                                <?php else : ?>
+                                    <iframe src="<?php echo URLROOT; ?>/public/uploads/<?php echo $postMain->content; ?>#toolbar=0&navpanes=0" frameborder="0" width="100%" height="500px"></iframe>
+                                <?php endif; ?>
+                                <?php if ($postMain->author_id == $_SESSION['user_id']) : ?>
+                                    <div class="menu-icon">
+                                        <div class="dropdown ">
+                                            <button type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="bi bi-three-dots-vertical text-white"></i>
+                                            </button>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                                <li class="text-center p-0"><a href="<?php echo URLROOT; ?>/posts/delete/<?php echo $postMain->id; ?>" class="dropdown-item text-center w-100 p-0">Delete</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                <?php else : ?>
+                                <?php endif; ?>
 
-                        </div>
+                            </div>
+                        <?php endif; ?>
                         <div class="d-flex justify-content-between align-items-center px-1 flex-wrap">
                             <div>
                                 <h2 class="second-heading py-1 ellipsis-1 mb-0 "><?php echo $postMain->title; ?> </h2>
@@ -107,10 +172,11 @@ $commentObj = new Comment;
                         <?php echo formatStats(count($comments)); ?> Conversations
                     </h1>
                     <div class="d-flex align-items-center mt-3 w-100">
-                        <div class="dp"><img src="<?php echo URLROOT; ?>/public/images/image 1.png" alt="" class="img-fluid"></div>
+                        <div class="dp"><img src="<?php echo URLROOT; ?>/public/images/<?php echo $user->img; ?>" alt="" class="img-fluid"></div>
                         <div class="comment-input w-100 ms-2">
                             <!-- <input type="text" class="w-100" placeholder="Comment"> -->
                             <textarea name="" id="comment" width="100" rows="1" placeholder="Comment"></textarea>
+                            <i id="emojiBtn" style="color: #989898; cursor: pointer;" class="bi bi-emoji-smile emojiBtnCommentReply"></i>
                             <i id="send-comment" data-post-id="<?php echo $postMain->id; ?>" class="bi bi-send-fill"></i>
                         </div>
                     </div>
@@ -153,7 +219,8 @@ $commentObj = new Comment;
                                             </div>
                                             <div class="comment-input reply-text-container w-100  reply-input">
                                                 <!-- <input type="text" class="w-100 bg-white " placeholder="Reply"> -->
-                                                <textarea class="bg-white reply-textarea1" width="100" rows="1" placeholder="Reply"></textarea>
+                                                <textarea id="emoji-text-p<?php echo $postMain->id; ?>c<?php echo $comment->id; ?>" class="bg-white reply-textarea1" width="100" rows="1" placeholder="Reply"></textarea>
+                                                <i id="emoji-btn-p<?php echo $postMain->id; ?>c<?php echo $comment->id; ?>" style="color: #989898; cursor: pointer;" class="bi bi-emoji-smile emojiBtnCommentReply emoji-reply d-none"></i>
                                                 <i data-post-id="<?php echo $postMain->id; ?>" data-comment-id="<?php echo $comment->id; ?>" class="bi bi-send-fill send-reply d-none"></i>
                                             </div>
                                             <div class="reply-box">
@@ -190,10 +257,11 @@ $commentObj = new Comment;
                                                                         </svg>
                                                                         <small class="reply-dislikes-count"><?php echo $reply_dislikes > 0 ? formatStats($reply_dislikes) : ''; ?></small>
                                                                     </span>
-                                                                    <button type="button" data-username="<?php echo $reply->username; ?>" class="f-14 text-primary w-500 ms-4 reply-btn">Reply</button>
+                                                                    <button type="button" data-username="<?php echo $reply->username; ?>" class="f-14 text-primary w-500 ms-4 reply-btn reply-btn-sub">Reply</button>
                                                                 </div>
                                                                 <div class="comment-input reply-text-container w-100  reply-input">
-                                                                    <textarea class="bg-white reply-textarea2" width="100" rows="1" placeholder="Reply"></textarea>
+                                                                    <textarea id="emoji-text-p<?php echo $postMain->id; ?>c<?php echo $comment->id; ?>sub" class="bg-white reply-textarea2" width="100" rows="1" placeholder="Reply"></textarea>
+                                                                    <i id="emoji-btn-p<?php echo $postMain->id; ?>c<?php echo $comment->id; ?>sub" style="color: #989898; cursor: pointer;" class="bi bi-emoji-smile emojiBtnCommentReply emoji-sub-reply d-none"></i>
                                                                     <i data-post-id="<?php echo $postMain->id; ?>" data-comment-id="<?php echo $comment->id; ?>" class="bi bi-send-fill send-reply sub-reply d-none"></i>
 
                                                                 </div>
@@ -225,11 +293,6 @@ $commentObj = new Comment;
         <button class="mb-2" type="button" data-bs-toggle="modal" data-bs-target="#Groups"><img src="<?php echo URLROOT; ?>/public/images/group.png" alt="">Groups</button>
     </div>
 </main>
-<div class="contact-icon">
-    <a href="contact.html" class="no-decoration">
-        <i class="bi bi-chat-dots-fill"></i>
-    </a>
-</div>
 <div class="verification-message">
     Peers have been added Successfully!
 </div>
@@ -394,7 +457,8 @@ include APPROOT . "/views/inc/footer.php";
                 </div>
                 <div class="comment-input reply-text-container w-100  reply-input">
                     <!-- <input type="text" class="w-100 bg-white " placeholder="Reply"> -->
-                    <textarea class="bg-white reply-textarea1" width="100" rows="1" placeholder="Reply"></textarea>
+                    <textarea id="emoji-text-p{post_id}c{comment_id}" class="bg-white reply-textarea1" width="100" rows="1" placeholder="Reply"></textarea>
+                    <i id="emoji-btn-p{post_id}c{comment_id}" style="color: #989898; cursor: pointer;" class="bi bi-emoji-smile emojiBtnCommentReply emoji-reply d-none"></i>
                     <i data-post-id="{post_id}" data-comment-id="{comment_id}" class="bi bi-send-fill send-reply d-none"></i>
                 </div>
                 <div class="reply-box"></div>
@@ -430,10 +494,11 @@ include APPROOT . "/views/inc/footer.php";
                     </svg>
                     <small class="reply-dislikes-count"></small>
                 </span>
-                <button type="button" data-username="{username}" class="f-14 text-primary w-500 ms-4 reply-btn">Reply</button>
+                <button type="button" data-username="{username}" class="f-14 text-primary w-500 ms-4 reply-btn reply-btn-sub">Reply</button>
             </div>
             <div class="comment-input reply-text-container w-100  reply-input">
-                <textarea class="bg-white reply-textarea2" width="100" rows="1" placeholder="Reply"></textarea>
+                <textarea id="emoji-text-p{post_id}c{comment_id}sub" class="bg-white reply-textarea2" width="100" rows="1" placeholder="Reply"></textarea>
+                <i id="emoji-btn-p{post_id}c{comment_id}sub" style="color: #989898; cursor: pointer;" class="bi bi-emoji-smile emojiBtnCommentReply emoji-sub-reply d-none"></i>
                 <i data-post-id="{post_id}" data-comment-id="{comment_id}" class="bi bi-send-fill send-reply sub-reply d-none"></i>
 
             </div>
@@ -462,6 +527,48 @@ include APPROOT . "/views/inc/footer.php";
             </div>
         </div>
     </a>
+</script>
+
+<script>
+    $(document).ready(function() {
+
+        var margin = 0,
+            instance1 = new emojiButtonList("emojiBtn", {
+                dropDownXAlign: "left",
+                textBoxID: "comment",
+                yAlignMargin: margin,
+                xAlignMargin: margin
+            })
+
+        function initEmojis() {
+            $(".emoji-reply, .emoji-sub-reply").each(function() {
+                var btnID = $(this).attr("id");
+                var textID = btnID.replace("btn", "text")
+                var instance = new emojiButtonList(btnID, {
+                    dropDownXAlign: "left",
+                    textBoxID: textID,
+                    yAlignMargin: margin,
+                    xAlignMargin: margin
+                })
+            })
+        }
+        initEmojis();
+
+        $(document).on("click", ".emoji-reply, .emoji-sub-reply", function() {
+            initEmojis()
+        }); 
+
+        // ==================================upload
+        // let input = document.getElementById("inputTag");
+        // let imageName = document.getElementById("imageName")
+
+        // input.addEventListener("change", () => {
+        //     let inputImage = document.querySelector("input[type=file]").files[0];
+
+        //     imageName.innerText = inputImage.name;
+        // })
+
+    });
 </script>
 
 <script>
@@ -506,11 +613,20 @@ include APPROOT . "/views/inc/footer.php";
                         .replace("{comment}", comment)
                         .replace("{username}", username)
                         .replace("{image}", img)
-                        .replace("{post_id}", postID)
+                        .replaceAll("{post_id}", postID)
                         .replaceAll("{comment_id}", commentID)
                     $(".comments-container").prepend(html)
                     $("#comment").val("")
                     $(".no-comments").remove()
+
+                    var btnID = `emoji-btn-p${postID}c${commentID}`
+                    var textID = btnID.replace("btn", "text")
+                    var instance = new emojiButtonList(btnID, {
+                        dropDownXAlign: "left",
+                        textBoxID: textID,
+                        yAlignMargin: 0,
+                        xAlignMargin: 0
+                    })
                 } else {
                     alert("There is some error in adding comment!")
                 }
@@ -564,13 +680,25 @@ include APPROOT . "/views/inc/footer.php";
                         .replace("{name}", username)
                         .replace("{username}", username)
                         .replace("{image}", img)
-                        .replace("{post_id}", postID)
-                        .replace("{comment_id}", commentID)
+                        .replaceAll("{post_id}", postID)
+                        .replaceAll("{comment_id}", commentID)
                         .replaceAll("{reply_id}", replyID)
                     replyMain.find(".reply-box").append(html)
                     replyText.val("");
 
                     that.parent().toggleClass("reply-input");
+                    that.closest(".reply-input").find(".send-reply").toggleClass("d-none");
+                    that.closest(".reply-input").find(".emoji-reply").toggleClass("d-none");
+                    that.closest(".reply-input").find(".emoji-sub-reply").toggleClass("d-none");
+
+                    var btnID = `emoji-btn-p${postID}c${commentID}sub`
+                    var textID = btnID.replace("btn", "text")
+                    var instance = new emojiButtonList(btnID, {
+                        dropDownXAlign: "left",
+                        textBoxID: textID,
+                        yAlignMargin: 0,
+                        xAlignMargin: 0
+                    })
 
                     $(".comments-container").markRegExp(/@(\w+)/g, {
                         className: "highlight"

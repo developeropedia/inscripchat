@@ -29,24 +29,54 @@ $results = $data["results"];
                 <div class="col-lg-11 mx-auto">
                     <div class="row mb-4">
                         <div class="col-lg-4 col-6  ms-auto">
-                            <div class="main-img w-100">
-                                <a href="<?php echo URLROOT; ?>/posts/post/<?php echo $result->id; ?>" class="no-decoration">
-                                    <img src="<?php echo URLROOT; ?>/public/uploads/<?php echo $result->type == 'pdf' ? 'adobe pdf 1.png' : $result->content; ?>" alt="" class="w-100">
-                                </a>
-                                <?php if ($result->author_id == $_SESSION['user_id']) : ?>
-                                    <div class="menu-icon menu-icon-result">
-                                        <div class="dropdown ">
-                                            <button type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <i class="bi bi-three-dots-vertical text-white"></i>
-                                            </button>
-                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
-                                                <li class="text-center p-0"><a href="<?php echo URLROOT; ?>/posts/delete/<?php echo $result->id; ?>" class="dropdown-item text-center w-100 p-0">Delete</a></li>
-                                            </ul>
+                            <?php if ($result->type == "video") : ?>
+                                <div class="main-video-div">
+                                    <video controls width="100%" class="main-video" id="video2">
+                                        <source src="<?php echo URLROOT; ?>/public/uploads/<?php echo $result->content; ?>" type="video/mp4">
+
+                                    </video>
+                                    <?php if ($result->author_id == $_SESSION['user_id'] || $result->author_id == ADMIN_ID) : ?>
+                                        <div class="menu-icon">
+                                            <div class="dropdown ">
+                                                <button type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="bi bi-three-dots-vertical text-white"></i>
+                                                </button>
+                                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                                    <li class="text-center p-0"><a href="<?php echo URLROOT; ?>/posts/delete/<?php echo $result->id; ?>" class="dropdown-item text-center w-100 p-0">Delete</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    <?php else : ?>
+                                    <?php endif; ?>
+                                    <div class="play-btn-div2">
+                                        <div class="play-btn2">
                                         </div>
                                     </div>
-                                <?php else : ?>
-                                <?php endif; ?>
-                            </div>
+                                    <div class="pause-btn-div2">
+                                        <div class="pause-btn2">
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php else : ?>
+                                <div class="main-img w-100">
+                                    <a href="<?php echo URLROOT; ?>/posts/post/<?php echo $result->id; ?>" class="no-decoration">
+                                        <img src="<?php echo URLROOT; ?>/public/uploads/<?php echo $result->type == 'pdf' ? 'adobe pdf 1.png' : $result->content; ?>" alt="" class="w-100">
+                                    </a>
+                                    <?php if ($result->author_id == $_SESSION['user_id'] || $result->author_id == ADMIN_ID) : ?>
+                                        <div class="menu-icon menu-icon-result">
+                                            <div class="dropdown ">
+                                                <button type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="bi bi-three-dots-vertical text-white"></i>
+                                                </button>
+                                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+                                                    <li class="text-center p-0"><a href="<?php echo URLROOT; ?>/posts/delete/<?php echo $result->id; ?>" class="dropdown-item text-center w-100 p-0">Delete</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    <?php else : ?>
+                                    <?php endif; ?>
+                                </div>
+                            <?php endif; ?>
                         </div>
                         <div class="col-lg-5 col-6 me-auto ps-0">
                             <a href="<?php echo URLROOT; ?>/posts/post/<?php echo $result->id; ?>" class="no-decoration">

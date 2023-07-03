@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 include APPROOT . "/views/inc/header.php";
 
@@ -6,7 +6,7 @@ include APPROOT . "/views/inc/header.php";
 
 <body class="sign-body">
     <div class="d-flex h-100 w-100">
-        <form action="<?php echo URLROOT; ?>/users/login" method="post" class="sign-form w-100">
+        <form method="post" class="sign-form w-100">
             <div class="w-60  h-100">
                 <img src="<?php echo URLROOT; ?>/public/images/LogIn.png" alt="" class=" w-100 sign-img">
                 <img src="<?php echo URLROOT; ?>/public/images/logo.png" alt="" class="logo img-fluid">
@@ -46,8 +46,10 @@ include APPROOT . "/views/inc/header.php";
     </div>
 
 
-    <?php
+    <div style="position: sticky; z-index: 1000;">
+        <?php
 
-include APPROOT . "/views/inc/footer.php";
+        include APPROOT . "/views/inc/footer.php";
 
-?>
+        ?>
+    </div>

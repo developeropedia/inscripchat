@@ -28,6 +28,12 @@
     {
       $group = $this->groupsModel->group($id);
       $user = $this->usersModel->getUserById($_SESSION['user_id']);
+
+      if(isset($_SESSION['user_in_group']) &&ADMIN_ID !== $user->userID && $group->owner_id !== $user->userID && !$this->groupsModel->isGroupMember($_SESSION['user_id'], $id)) {
+        flash("removed_from_group", "You have been removed from group", "errorMsg");
+        unset($_SESSION['user_in_group']);
+        redirect("posts");
+      }
       
       if(ADMIN_ID !== $user->userID && $group->owner_id !== $user->userID && !$this->groupsModel->isGroupMember($_SESSION['user_id'], $id)) {
         $this->view("pages/404.php", ["title" => "404 | Page not found"]);
@@ -40,6 +46,7 @@
       if (empty($group)) {
         $this->view("/pages/404.php", ["title" => "404 | Page not found"]);
       } else {
+        $_SESSION['user_in_group'] = true;
         $posts = $this->groupsModel->getGroupPosts($id, POSTS_PER_PAGE, 0);
         $this->view("/groups/group", ["title" => $group->name, "group" => $group, "user" => $user, "posts" => $posts, "peers" => $peersNotInGroup, "groupPeers" => $groupPeers]);
       }
