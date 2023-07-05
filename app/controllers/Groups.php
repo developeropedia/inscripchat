@@ -100,4 +100,13 @@
       echo false;
     }
   }
+
+  public function getNewComments() {
+    $groups = $this->groupsModel->getRecentGroups();
+    if (count($groups) > 3) {
+      $groups = array_slice($groups, 0, 3);
+    }
+
+    echo json_encode(["groups" => $groups]);
+  }
 }

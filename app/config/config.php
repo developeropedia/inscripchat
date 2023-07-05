@@ -8,7 +8,7 @@
   // App Root
   define('APPROOT', dirname(dirname(__FILE__)));
   // URL Root
-  define('URLROOT', 'http://www.inscripchat.com');
+  define('URLROOT', 'https://www.inscripchat.com');
   // Site Name
   define('SITENAME', 'Inscripchat');
 

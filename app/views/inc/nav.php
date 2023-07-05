@@ -67,9 +67,9 @@ $chats = array_slice($chats, 0, 3);
                                 <div class="message-number-notification d-none">0</div>
                             </a>
 
-                            <ul class="child">
+                            <ul class="child chat-notifications-nav">
                                 <div class="up-arrow"></div>
-                                <div>
+                                <div class="peers-heading">
                                     <h1 class="drop-heading text-center">Peers</h1>
                                 </div>
                                 <?php
@@ -83,7 +83,7 @@ $chats = array_slice($chats, 0, 3);
                                     ?>
                                         <li>
                                             <a href="<?php echo URLROOT; ?>/chats?id=<?php echo $chat->sender_id; ?>">
-                                                <div class="chat-notification">
+                                                <div class="chat-notification" data-sender-id="<?php echo $chat->sender_id; ?>">
                                                     <div class="chat-notification-img">
                                                         <img src="<?php echo URLROOT; ?>/public/images/<?php echo $chat->user_img; ?>" alt="">
                                                     </div>
@@ -124,6 +124,7 @@ $chats = array_slice($chats, 0, 3);
                                 <div>
                                     <h1 class="drop-heading text-center">Groups</h1>
                                 </div>
+                                <div class="group-notifications-nav">
                                 <?php if (!empty($groups)) : ?>
                                     <?php foreach ($groups as $group) : ?>
                                         <li>
@@ -156,6 +157,7 @@ $chats = array_slice($chats, 0, 3);
                                 <?php else : ?>
                                     <p class="text-center">No comments</p>
                                 <?php endif; ?>
+                                </div>
                             </ul>
                         </div>
                     </div>

@@ -1678,9 +1678,9 @@ body {
 
     .emojiBtnCommentReply {
       color: #838EAB;
-      position: absolute;
+      /* position: absolute;
       top: 8px;
-      right: 30px;
+      right: 30px; */
       cursor: pointer;
     }
 
@@ -1776,4 +1776,86 @@ body {
 
     .post-link:hover {
       color: #000000;
+    }
+
+    /*===========================emoji dashboard */
+    .emoji-div {
+      position: absolute;
+      top: 8px;
+      right: 30px;
+    }
+
+    .emoji-btn {
+      height: fit-content;
+      width: fit-content;
+      /* background-color: red; */
+      border-radius: 100%;
+      cursor: pointer;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .emoji-dashboard {
+      display: none;
+      position: absolute;
+      height: 200px;
+      width: 220px;
+      background-color: white;
+      border-radius: 10px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      bottom: -100px;
+      right: 40px;
+      overflow-y: scroll;
+      z-index: 100;
+    }
+
+    .emojis {
+      display: flex;
+      flex-wrap: wrap;
+      list-style: none;
+      justify-content: space-evenly;
+      position: relative;
+      padding-left: 0px !important;
+    }
+
+    .emojis li {
+      margin: 7px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .right-arrow {
+      position: absolute;
+      right: 20px;
+      bottom: -7px;
+      border-color: transparent white;
+      border-style: solid;
+      border-width: 20px 0px 20px 20px;
+      height: 0px;
+      width: 0px;
+      z-index: 100;
+      display: none;
+    }
+
+    .emoji-dashboard::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    .emoji-dashboard::-webkit-scrollbar-thumb {
+      background-color: #707070;
+      border-radius: 5px;
+    }
+
+    .emoji-display {
+      display: flex;
+    }
+
+    @media only screen and (max-width:400px) {
+      .emoji-dashboard {
+        height: 250px;
+        width: 180px;
+      }
     }

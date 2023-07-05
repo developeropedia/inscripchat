@@ -176,7 +176,15 @@ $commentObj = new Comment;
                         <div class="comment-input w-100 ms-2">
                             <!-- <input type="text" class="w-100" placeholder="Comment"> -->
                             <textarea name="" id="comment" width="100" rows="1" placeholder="Comment"></textarea>
-                            <i id="emojiBtn" style="color: #989898; cursor: pointer;" class="bi bi-emoji-smile emojiBtnCommentReply"></i>
+                            <div class="emoji-div">
+                                <div class="right-arrow"></div>
+                                <div class="emoji-btn">
+                                    <i id="emojiBtn" style="color: #989898; cursor: pointer;" class="bi bi-emoji-smile emojiBtnCommentReply"></i>
+                                </div>
+                                <?php include APPROOT . "/views/inc/emojis.php" ?>
+                            </div>
+
+                            <!-- <i id="emojiBtn" style="color: #989898; cursor: pointer;" class="bi bi-emoji-smile emojiBtnCommentReply"></i> -->
                             <i id="send-comment" data-post-id="<?php echo $postMain->id; ?>" class="bi bi-send-fill"></i>
                         </div>
                     </div>
@@ -220,13 +228,20 @@ $commentObj = new Comment;
                                             <div class="comment-input reply-text-container w-100  reply-input">
                                                 <!-- <input type="text" class="w-100 bg-white " placeholder="Reply"> -->
                                                 <textarea id="emoji-text-p<?php echo $postMain->id; ?>c<?php echo $comment->id; ?>" class="bg-white reply-textarea1" width="100" rows="1" placeholder="Reply"></textarea>
-                                                <i id="emoji-btn-p<?php echo $postMain->id; ?>c<?php echo $comment->id; ?>" style="color: #989898; cursor: pointer;" class="bi bi-emoji-smile emojiBtnCommentReply emoji-reply d-none"></i>
+                                                <div class="emoji-div">
+                                                    <div class="right-arrow"></div>
+                                                    <div class="emoji-btn">
+                                                        <i id="emojiBtn" style="color: #989898; cursor: pointer;" class="bi bi-emoji-smile emojiBtnCommentReply emoji-reply d-none"></i>
+                                                    </div>
+                                                    <?php include APPROOT . "/views/inc/emojis.php" ?>
+                                                </div>
+                                                <!-- <i id="" style="color: #989898; cursor: pointer;" class="bi bi-emoji-smile emojiBtnCommentReply emoji-reply d-none"></i> -->
                                                 <i data-post-id="<?php echo $postMain->id; ?>" data-comment-id="<?php echo $comment->id; ?>" class="bi bi-send-fill send-reply d-none"></i>
                                             </div>
                                             <div class="reply-box">
                                                 <?php $replies = $commentObj->getCommentReplies($comment->id); ?>
                                                 <?php if (!empty($replies)) : ?>
-                                                    <?php foreach ($replies as $reply) : ?>
+                                                    <?php foreach ($replies as $key => $reply) : ?>
                                                         <?php
                                                         $reply_likes_dislikes = $commentObj->getReplyLikesDislikes($reply->id);
                                                         $reply_likes = $reply_likes_dislikes->likes;
@@ -260,8 +275,15 @@ $commentObj = new Comment;
                                                                     <button type="button" data-username="<?php echo $reply->username; ?>" class="f-14 text-primary w-500 ms-4 reply-btn reply-btn-sub">Reply</button>
                                                                 </div>
                                                                 <div class="comment-input reply-text-container w-100  reply-input">
-                                                                    <textarea id="emoji-text-p<?php echo $postMain->id; ?>c<?php echo $comment->id; ?>sub" class="bg-white reply-textarea2" width="100" rows="1" placeholder="Reply"></textarea>
-                                                                    <i id="emoji-btn-p<?php echo $postMain->id; ?>c<?php echo $comment->id; ?>sub" style="color: #989898; cursor: pointer;" class="bi bi-emoji-smile emojiBtnCommentReply emoji-sub-reply d-none"></i>
+                                                                    <textarea id="emoji-text-p<?php echo $postMain->id; ?>c<?php echo $comment->id . $key + 1; ?>sub" class="bg-white reply-textarea2" width="100" rows="1" placeholder="Reply"></textarea>
+                                                                    <div class="emoji-div">
+                                                                        <div class="right-arrow"></div>
+                                                                        <div class="emoji-btn">
+                                                                            <i id="emojiBtn" style="color: #989898; cursor: pointer;" class="bi bi-emoji-smile emojiBtnCommentReply emoji-sub-reply d-none"></i>
+                                                                        </div>
+                                                                        <?php include APPROOT . "/views/inc/emojis.php" ?>
+                                                                    </div>
+                                                                    <!-- <i id="" style="color: #989898; cursor: pointer;" class="bi bi-emoji-smile emojiBtnCommentReply emoji-sub-reply d-none"></i> -->
                                                                     <i data-post-id="<?php echo $postMain->id; ?>" data-comment-id="<?php echo $comment->id; ?>" class="bi bi-send-fill send-reply sub-reply d-none"></i>
 
                                                                 </div>
@@ -458,7 +480,82 @@ include APPROOT . "/views/inc/footer.php";
                 <div class="comment-input reply-text-container w-100  reply-input">
                     <!-- <input type="text" class="w-100 bg-white " placeholder="Reply"> -->
                     <textarea id="emoji-text-p{post_id}c{comment_id}" class="bg-white reply-textarea1" width="100" rows="1" placeholder="Reply"></textarea>
-                    <i id="emoji-btn-p{post_id}c{comment_id}" style="color: #989898; cursor: pointer;" class="bi bi-emoji-smile emojiBtnCommentReply emoji-reply d-none"></i>
+                    <div class="emoji-div">
+                        <div class="right-arrow"></div>
+                        <div class="emoji-btn">
+                            <i id="emojiBtn" style="color: #989898; cursor: pointer;" class="bi bi-emoji-smile emojiBtnCommentReply emoji-reply d-none"></i>
+                        </div>
+                        <div class="emoji-dashboard">
+                            <ul class="emojis">
+                                <!-- Smile Emojis -->
+                                <li class="emoji" data-emoji="1f604"><i class="em em-smile"></i></li>
+                                <li class="emoji" data-emoji="1f603"><i class="em em-grinning"></i></li>
+                                <li class="emoji" data-emoji="1f601"><i class="em em-grin"></i></li>
+                                <li class="emoji" data-emoji="1f602"><i class="em em-joy"></i></li>
+                                <li class="emoji" data-emoji="1f642"><i class="em em-slightly_smiling_face"></i></li>
+                                <li class="emoji" data-emoji="1f60a"><i class="em em-smiley"></i></li>
+                                <li class="emoji" data-emoji="1f60f"><i class="em em-smirk"></i></li>
+                                <li class="emoji" data-emoji="1f606"><i class="em em-laughing"></i></li>
+                                <li class="emoji" data-emoji="1f644"><i class="em em-face_with_rolling_eyes"></i></li>
+                                <li class="emoji" data-emoji="1f60d"><i class="em em-heart_eyes"></i></li>
+
+                                <!-- Sad Emojis -->
+                                <li class="emoji" data-emoji="1f62d"><i class="em em-sob"></i></li>
+                                <li class="emoji" data-emoji="1f622"><i class="em em-cry"></i></li>
+                                <li class="emoji" data-emoji="1f61e"><i class="em em-disappointed"></i></li>
+                                <li class="emoji" data-emoji="1f614"><i class="em em-pensive"></i></li>
+                                <li class="emoji" data-emoji="1f629"><i class="em em-weary"></i></li>
+                                <li class="emoji" data-emoji="1f616"><i class="em em-confounded"></i></li>
+                                <li class="emoji" data-emoji="1f62b"><i class="em em-tired_face"></i></li>
+                                <li class="emoji" data-emoji="1f620"><i class="em em-angry"></i></li>
+                                <li class="emoji" data-emoji="1f631"><i class="em em-scream"></i></li>
+                                <li class="emoji" data-emoji="1f47f"><i class="em em-imp"></i></li>
+
+                                <!-- Love Emojis -->
+                                <li class="emoji" data-emoji="2764"><i class="em em-heart"></i></li>
+                                <li class="emoji" data-emoji="1f494"><i class="em em-broken_heart"></i></li>
+                                <li class="emoji" data-emoji="1f48b"><i class="em em-kissing_heart"></i></li>
+                                <li class="emoji" data-emoji="1f48c"><i class="em em-love_letter"></i></li>
+                                <li class="emoji" data-emoji="1f496"><i class="em em-sparkling_heart"></i></li>
+                                <li class="emoji" data-emoji="1f495"><i class="em em-two_hearts"></i></li>
+                                <li class="emoji" data-emoji="1f49e"><i class="em em-revolving_hearts"></i></li>
+                                <li class="emoji" data-emoji="1f493"><i class="em em-heartbeat"></i></li>
+                                <li class="emoji" data-emoji="1f498"><i class="em em-cupid"></i></li>
+                                <li class="emoji" data-emoji="1f497"><i class="em em-heartpulse"></i></li>
+
+                                <!-- Food Emojis -->
+                                <li class="emoji" data-emoji="1f355"><i class="em em-pizza"></i></li>
+                                <li class="emoji" data-emoji="1f354"><i class="em em-hamburger"></i></li>
+                                <li class="emoji" data-emoji="1f369"><i class="em em-doughnut"></i></li>
+                                <li class="emoji" data-emoji="1f366"><i class="em em-ice_cream"></i></li>
+                                <li class="emoji" data-emoji="1f353"><i class="em em-strawberry"></i></li>
+                                <li class="emoji" data-emoji="1f32e"><i class="em em-taco"></i></li>
+                                <li class="emoji" data-emoji="1f363"><i class="em em-sushi"></i></li>
+                                <li class="emoji" data-emoji="1f32d"><i class="em em-hotdog"></i></li>
+                                <li class="emoji" data-emoji="1f35f"><i class="em em-fries"></i></li>
+                                <li class="emoji" data-emoji="1f382"><i class="em em-cake"></i></li>
+
+                                <!-- Animal Emojis -->
+                                <li class="emoji" data-emoji="1f436"><i class="em em-dog"></i></li>
+                                <li class="emoji" data-emoji="1f431"><i class="em em-cat"></i></li>
+                                <li class="emoji" data-emoji="1f430"><i class="em em-rabbit"></i></li>
+                                <li class="emoji" data-emoji="1f43c"><i class="em em-panda_face"></i></li>
+                                <li class="emoji" data-emoji="1f42f"><i class="em em-tiger"></i></li>
+                                <li class="emoji" data-emoji="1f43b"><i class="em em-bear"></i></li>
+                                <li class="emoji" data-emoji="1f418"><i class="em em-elephant"></i></li>
+                                <li class="emoji" data-emoji="1f428"><i class="em em-koala"></i></li>
+                                <li class="emoji" data-emoji="1f435"><i class="em em-monkey"></i></li>
+                                <li class="emoji" data-emoji="1f984"><i class="em em-unicorn_face"></i></li>
+
+                                <!-- Additional Emojis -->
+                                <li class="emoji" data-emoji="2615"><i class="em em-coffee"></i></li>
+                                <li class="emoji" data-emoji="1f37a"><i class="em em-beer"></i></li>
+                                <li class="emoji" data-emoji="1f680"><i class="em em-rocket"></i></li>
+                                <li class="emoji" data-emoji="1f525"><i class="em em-fire"></i></li>
+                            </ul>
+
+                        </div>
+                    </div>
                     <i data-post-id="{post_id}" data-comment-id="{comment_id}" class="bi bi-send-fill send-reply d-none"></i>
                 </div>
                 <div class="reply-box"></div>
@@ -498,7 +595,82 @@ include APPROOT . "/views/inc/footer.php";
             </div>
             <div class="comment-input reply-text-container w-100  reply-input">
                 <textarea id="emoji-text-p{post_id}c{comment_id}sub" class="bg-white reply-textarea2" width="100" rows="1" placeholder="Reply"></textarea>
-                <i id="emoji-btn-p{post_id}c{comment_id}sub" style="color: #989898; cursor: pointer;" class="bi bi-emoji-smile emojiBtnCommentReply emoji-sub-reply d-none"></i>
+                <div class="emoji-div">
+                    <div class="right-arrow"></div>
+                    <div class="emoji-btn">
+                        <i id="emojiBtn" style="color: #989898; cursor: pointer;" class="bi bi-emoji-smile emojiBtnCommentReply emoji-sub-reply d-none"></i>
+                    </div>
+                    <div class="emoji-dashboard">
+                        <ul class="emojis">
+                            <!-- Smile Emojis -->
+                            <li class="emoji" data-emoji="1f604"><i class="em em-smile"></i></li>
+                            <li class="emoji" data-emoji="1f603"><i class="em em-grinning"></i></li>
+                            <li class="emoji" data-emoji="1f601"><i class="em em-grin"></i></li>
+                            <li class="emoji" data-emoji="1f602"><i class="em em-joy"></i></li>
+                            <li class="emoji" data-emoji="1f642"><i class="em em-slightly_smiling_face"></i></li>
+                            <li class="emoji" data-emoji="1f60a"><i class="em em-smiley"></i></li>
+                            <li class="emoji" data-emoji="1f60f"><i class="em em-smirk"></i></li>
+                            <li class="emoji" data-emoji="1f606"><i class="em em-laughing"></i></li>
+                            <li class="emoji" data-emoji="1f644"><i class="em em-face_with_rolling_eyes"></i></li>
+                            <li class="emoji" data-emoji="1f60d"><i class="em em-heart_eyes"></i></li>
+
+                            <!-- Sad Emojis -->
+                            <li class="emoji" data-emoji="1f62d"><i class="em em-sob"></i></li>
+                            <li class="emoji" data-emoji="1f622"><i class="em em-cry"></i></li>
+                            <li class="emoji" data-emoji="1f61e"><i class="em em-disappointed"></i></li>
+                            <li class="emoji" data-emoji="1f614"><i class="em em-pensive"></i></li>
+                            <li class="emoji" data-emoji="1f629"><i class="em em-weary"></i></li>
+                            <li class="emoji" data-emoji="1f616"><i class="em em-confounded"></i></li>
+                            <li class="emoji" data-emoji="1f62b"><i class="em em-tired_face"></i></li>
+                            <li class="emoji" data-emoji="1f620"><i class="em em-angry"></i></li>
+                            <li class="emoji" data-emoji="1f631"><i class="em em-scream"></i></li>
+                            <li class="emoji" data-emoji="1f47f"><i class="em em-imp"></i></li>
+
+                            <!-- Love Emojis -->
+                            <li class="emoji" data-emoji="2764"><i class="em em-heart"></i></li>
+                            <li class="emoji" data-emoji="1f494"><i class="em em-broken_heart"></i></li>
+                            <li class="emoji" data-emoji="1f48b"><i class="em em-kissing_heart"></i></li>
+                            <li class="emoji" data-emoji="1f48c"><i class="em em-love_letter"></i></li>
+                            <li class="emoji" data-emoji="1f496"><i class="em em-sparkling_heart"></i></li>
+                            <li class="emoji" data-emoji="1f495"><i class="em em-two_hearts"></i></li>
+                            <li class="emoji" data-emoji="1f49e"><i class="em em-revolving_hearts"></i></li>
+                            <li class="emoji" data-emoji="1f493"><i class="em em-heartbeat"></i></li>
+                            <li class="emoji" data-emoji="1f498"><i class="em em-cupid"></i></li>
+                            <li class="emoji" data-emoji="1f497"><i class="em em-heartpulse"></i></li>
+
+                            <!-- Food Emojis -->
+                            <li class="emoji" data-emoji="1f355"><i class="em em-pizza"></i></li>
+                            <li class="emoji" data-emoji="1f354"><i class="em em-hamburger"></i></li>
+                            <li class="emoji" data-emoji="1f369"><i class="em em-doughnut"></i></li>
+                            <li class="emoji" data-emoji="1f366"><i class="em em-ice_cream"></i></li>
+                            <li class="emoji" data-emoji="1f353"><i class="em em-strawberry"></i></li>
+                            <li class="emoji" data-emoji="1f32e"><i class="em em-taco"></i></li>
+                            <li class="emoji" data-emoji="1f363"><i class="em em-sushi"></i></li>
+                            <li class="emoji" data-emoji="1f32d"><i class="em em-hotdog"></i></li>
+                            <li class="emoji" data-emoji="1f35f"><i class="em em-fries"></i></li>
+                            <li class="emoji" data-emoji="1f382"><i class="em em-cake"></i></li>
+
+                            <!-- Animal Emojis -->
+                            <li class="emoji" data-emoji="1f436"><i class="em em-dog"></i></li>
+                            <li class="emoji" data-emoji="1f431"><i class="em em-cat"></i></li>
+                            <li class="emoji" data-emoji="1f430"><i class="em em-rabbit"></i></li>
+                            <li class="emoji" data-emoji="1f43c"><i class="em em-panda_face"></i></li>
+                            <li class="emoji" data-emoji="1f42f"><i class="em em-tiger"></i></li>
+                            <li class="emoji" data-emoji="1f43b"><i class="em em-bear"></i></li>
+                            <li class="emoji" data-emoji="1f418"><i class="em em-elephant"></i></li>
+                            <li class="emoji" data-emoji="1f428"><i class="em em-koala"></i></li>
+                            <li class="emoji" data-emoji="1f435"><i class="em em-monkey"></i></li>
+                            <li class="emoji" data-emoji="1f984"><i class="em em-unicorn_face"></i></li>
+
+                            <!-- Additional Emojis -->
+                            <li class="emoji" data-emoji="2615"><i class="em em-coffee"></i></li>
+                            <li class="emoji" data-emoji="1f37a"><i class="em em-beer"></i></li>
+                            <li class="emoji" data-emoji="1f680"><i class="em em-rocket"></i></li>
+                            <li class="emoji" data-emoji="1f525"><i class="em em-fire"></i></li>
+                        </ul>
+
+                    </div>
+                </div>
                 <i data-post-id="{post_id}" data-comment-id="{comment_id}" class="bi bi-send-fill send-reply sub-reply d-none"></i>
 
             </div>
@@ -530,48 +702,6 @@ include APPROOT . "/views/inc/footer.php";
 </script>
 
 <script>
-    $(document).ready(function() {
-
-        var margin = 0,
-            instance1 = new emojiButtonList("emojiBtn", {
-                dropDownXAlign: "left",
-                textBoxID: "comment",
-                yAlignMargin: margin,
-                xAlignMargin: margin
-            })
-
-        function initEmojis() {
-            $(".emoji-reply, .emoji-sub-reply").each(function() {
-                var btnID = $(this).attr("id");
-                var textID = btnID.replace("btn", "text")
-                var instance = new emojiButtonList(btnID, {
-                    dropDownXAlign: "left",
-                    textBoxID: textID,
-                    yAlignMargin: margin,
-                    xAlignMargin: margin
-                })
-            })
-        }
-        initEmojis();
-
-        $(document).on("click", ".emoji-reply, .emoji-sub-reply", function() {
-            initEmojis()
-        }); 
-
-        // ==================================upload
-        // let input = document.getElementById("inputTag");
-        // let imageName = document.getElementById("imageName")
-
-        // input.addEventListener("change", () => {
-        //     let inputImage = document.querySelector("input[type=file]").files[0];
-
-        //     imageName.innerText = inputImage.name;
-        // })
-
-    });
-</script>
-
-<script>
     var post_id = $("#post-id").val();
     const appURL = "<?php echo URLROOT; ?>";
 
@@ -590,6 +720,8 @@ include APPROOT . "/views/inc/footer.php";
         if (comment === "") {
             return 0;
         }
+
+        $("#comment").val("")
 
         const commentTemplate = $("#comment-template").html();
 
@@ -616,17 +748,13 @@ include APPROOT . "/views/inc/footer.php";
                         .replaceAll("{post_id}", postID)
                         .replaceAll("{comment_id}", commentID)
                     $(".comments-container").prepend(html)
-                    $("#comment").val("")
+                    // $("#comment").val("")
                     $(".no-comments").remove()
 
-                    var btnID = `emoji-btn-p${postID}c${commentID}`
-                    var textID = btnID.replace("btn", "text")
-                    var instance = new emojiButtonList(btnID, {
-                        dropDownXAlign: "left",
-                        textBoxID: textID,
-                        yAlignMargin: 0,
-                        xAlignMargin: 0
-                    })
+                    const emojiDashboard = $('.emoji-dashboard');
+                    const rightArrow = $('.right-arrow');
+                    emojiDashboard.removeClass('emoji-display');
+                    rightArrow.removeClass('emoji-display');
                 } else {
                     alert("There is some error in adding comment!")
                 }
@@ -654,6 +782,8 @@ include APPROOT . "/views/inc/footer.php";
         if (reply === "") {
             return 0;
         }
+
+        replyText.val("");
 
         const replyTemplate = $("#reply-template").html();
         const that = $(this);
@@ -684,21 +814,17 @@ include APPROOT . "/views/inc/footer.php";
                         .replaceAll("{comment_id}", commentID)
                         .replaceAll("{reply_id}", replyID)
                     replyMain.find(".reply-box").append(html)
-                    replyText.val("");
+                    // replyText.val("");
 
                     that.parent().toggleClass("reply-input");
                     that.closest(".reply-input").find(".send-reply").toggleClass("d-none");
                     that.closest(".reply-input").find(".emoji-reply").toggleClass("d-none");
                     that.closest(".reply-input").find(".emoji-sub-reply").toggleClass("d-none");
 
-                    var btnID = `emoji-btn-p${postID}c${commentID}sub`
-                    var textID = btnID.replace("btn", "text")
-                    var instance = new emojiButtonList(btnID, {
-                        dropDownXAlign: "left",
-                        textBoxID: textID,
-                        yAlignMargin: 0,
-                        xAlignMargin: 0
-                    })
+                    const emojiDashboard = $('.emoji-dashboard');
+                    const rightArrow = $('.right-arrow');
+                    emojiDashboard.removeClass('emoji-display');
+                    rightArrow.removeClass('emoji-display');
 
                     $(".comments-container").markRegExp(/@(\w+)/g, {
                         className: "highlight"
@@ -753,8 +879,8 @@ include APPROOT . "/views/inc/footer.php";
                         $("#post-like").css("fill", "currentColor")
                     }
 
-                    $("#post-like-count").text(formatStats(response.likes))
-                    $("#post-dislike-count").text(formatStats(response.dislikes))
+                    $("#post-like-count").text(response.likes > 0 ? formatStats(response.likes) : '')
+                    $("#post-dislike-count").text(response.dislikes > 0 ? formatStats(response.dislikes) : '')
                 }
             }
         })
@@ -786,8 +912,8 @@ include APPROOT . "/views/inc/footer.php";
                         that.closest(".comment-text").find(".post-liked").css("fill", "currentColor")
                     }
 
-                    that.closest(".comment-text").find(".comment-like-count").text(formatStats(response.likes))
-                    that.closest(".comment-text").find(".comment-dislike-count").text(formatStats(response.dislikes))
+                    that.closest(".comment-text").find(".comment-like-count").text(response.likes > 0 ? formatStats(response.likes) : '')
+                    that.closest(".comment-text").find(".comment-dislike-count").text(response.dislikes > 0 ? formatStats(response.dislikes) : '')
                 }
             }
         })
@@ -819,8 +945,8 @@ include APPROOT . "/views/inc/footer.php";
                         that.closest(".reply-text").find(".post-liked").css("fill", "currentColor")
                     }
 
-                    that.closest(".reply-text").find(".reply-likes-count").text(formatStats(response.likes))
-                    that.closest(".reply-text").find(".reply-dislikes-count").text(formatStats(response.dislikes))
+                    that.closest(".reply-text").find(".reply-likes-count").text(response.likes > 0 ? formatStats(response.likes) : '')
+                    that.closest(".reply-text").find(".reply-dislikes-count").text(response.dislikes > 0 ? formatStats(response.dislikes) : '')
                 }
             }
         })

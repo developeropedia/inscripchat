@@ -88,6 +88,20 @@
       }
     }
 
+    public function getUserByEmail($email){
+      $this->db->query("SELECT * FROM users WHERE email = :email");
+      $this->db->bind(':email', $email);
+
+      $row = $this->db->single();
+
+      //Check Rows
+      if($this->db->rowCount() > 0){
+        return $row;
+      } else {
+        return false;
+      }
+    }
+
     // Login / Authenticate User
     public function login($data){
       $this->db->query("SELECT * FROM users WHERE username = :username");
@@ -405,6 +419,30 @@
       $query = "UPDATE users SET is_confirmed = 1, confirmation_token = null WHERE id = :id";
       $this->db->query($query);
       $this->db->bind(":id", $id);
+      $this->db->execute();
+    }
+
+    public function updatePassToken($id, $token) {
+      $query = "UPDATE users SET pass_token = :token WHERE id = :id";
+      $this->db->query($query);
+      $this->db->bind(":id", $id);
+      $this->db->bind(":token", $token);
+      $this->db->execute();
+    }
+
+    public function getUserByToken($token) {
+      $query = "SELECT * FROM users WHERE pass_token = :token LIMIT 1";
+      $this->db->query($query);
+      $this->db->bind(":token", $token);
+      $this->db->execute();
+      return $this->db->single();
+    }
+
+    public function updatePassword($id, $password) {
+      $query = "UPDATE users SET pass_token = null, password = :password WHERE id = :id";
+      $this->db->query($query);
+      $this->db->bind(":id", $id);
+      $this->db->bind(":password", $password);
       $this->db->execute();
     }
 }

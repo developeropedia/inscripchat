@@ -149,3 +149,70 @@ $(document).ready(function() {
         $(".message-number-notification").text(total)
     }
 })
+
+$(document).on("click", ".emoji-btn", function (event) {
+    event.stopPropagation();
+    $(this).next('.emoji-dashboard').toggleClass("emoji-display");
+    $(this).prev('.right-arrow').toggleClass("emoji-display");
+})
+
+$(document).on('click', function (event) {
+    const emojiDashboard = $('.emoji-dashboard');
+    const rightArrow = $('.right-arrow');
+
+    // Check if the clicked element is outside the emoji dashboard
+    if (!emojiDashboard.has(event.target).length && !$(event.target).hasClass('emoji-btn')) {
+        // Remove the .emoji-display class
+        emojiDashboard.removeClass('emoji-display');
+        rightArrow.removeClass('emoji-display');
+    }
+});
+
+
+$(document).ready(function () {
+    // Event handler for emoji click
+    $(document).on('click', '.emojis li', function () {
+        if (!$(this).closest(".transcribe-box").length) {
+            // Get the emoji code point
+            var emojiCodePoint = $(this).data('emoji');
+            console.log(emojiCodePoint);
+
+            // Convert code point to actual emoji character
+            var emojiCharacter = String.fromCodePoint(parseInt(emojiCodePoint, 16));
+
+            // Insert emoji into textarea at current cursor position
+            var textarea = $(this).closest(".comment-input").find("textarea")[0]
+            var startPos = textarea.selectionStart;
+            var endPos = textarea.selectionEnd;
+            var text = textarea.value;
+            var emoji = emojiCharacter;
+            textarea.value = text.substring(0, startPos) + emoji + text.substring(endPos);
+
+            // Set cursor position after the inserted emoji
+            var newCursorPos = startPos + emoji.length;
+            textarea.setSelectionRange(newCursorPos, newCursorPos);
+            textarea.focus();
+        } else {
+            // Get the emoji code point
+            var emojiCodePoint = $(this).data('emoji');
+            console.log(emojiCodePoint);
+
+            // Convert code point to actual emoji character
+            var emojiCharacter = String.fromCodePoint(parseInt(emojiCodePoint, 16));
+
+            // Insert emoji into textarea at current cursor position
+            var textarea = $(this).closest(".transcribe-box").find("textarea")[0]
+            var startPos = textarea.selectionStart;
+            var endPos = textarea.selectionEnd;
+            var text = textarea.value;
+            var emoji = emojiCharacter;
+            textarea.value = text.substring(0, startPos) + emoji + text.substring(endPos);
+
+            // Set cursor position after the inserted emoji
+            var newCursorPos = startPos + emoji.length;
+            textarea.setSelectionRange(newCursorPos, newCursorPos);
+            textarea.focus();
+        }
+    });
+});
+

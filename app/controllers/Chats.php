@@ -54,6 +54,11 @@
         $msgs = $this->chatModel->newMsgsAll();
         echo json_encode(["msgs" => $msgs]);
     }
+
+    public function getNewMessages() {
+        $msgs = $this->chatModel->getNewMessages();
+        echo json_encode(["msgs" => $msgs]);
+    }
 }
 
 ?>

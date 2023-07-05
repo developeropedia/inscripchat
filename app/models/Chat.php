@@ -228,4 +228,29 @@
     return $this->db->resultSet();
   }
 
+  public function getNewMessages() {
+    $query = "SELECT c.*, u.name AS peer_name, u.img AS peer_img, IFNULL(mc.message_count, 0) AS message_count
+    FROM chats c
+    INNER JOIN users u ON u.id = c.sender_id
+    LEFT JOIN (
+        SELECT sender_id, receiver_id, COUNT(*) AS message_count
+        FROM chats
+        WHERE status = 0
+        GROUP BY sender_id, receiver_id
+    ) mc ON mc.sender_id = c.sender_id AND mc.receiver_id = c.receiver_id
+    WHERE c.receiver_id = :user_id
+    AND c.status = 0
+    AND NOT EXISTS (
+        SELECT 1
+        FROM chats
+        WHERE sender_id = c.sender_id
+        AND receiver_id = c.receiver_id
+        AND timestamp > c.timestamp
+    )
+";
+    $this->db->query($query);
+    $this->db->bind(':user_id', $_SESSION['user_id']);
+    return $messages = $this->db->resultSet();
+  }
+
 }

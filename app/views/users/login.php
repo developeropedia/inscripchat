@@ -15,7 +15,10 @@ include APPROOT . "/views/inc/header.php";
                 <div class="sign-content">
                     <?php flash('register_success'); ?>
                     <?php flash('email_confirmed', '', 'successMsg'); ?>
+                    <?php flash('email_sent', '', 'successMsg'); ?>
+                    <?php flash('password_reset', '', 'successMsg'); ?>
                     <?php flash('email_not_confirmed', '', 'errorMsg'); ?>
+                    <?php flash("token_not_found", "", "errorMsg"); ?>
                     <h1 class="sign-heading mb-3">Sign In</h1>
                     <p class="text-danger"><?php echo $data['error']; ?></p>
                     <div class="mb-4">
@@ -23,9 +26,9 @@ include APPROOT . "/views/inc/header.php";
                     </div>
                     <div class="mb-4">
                         <input type="password" name="password" class="sign-input" placeholder="Password">
-                        <!-- <div class="text-end">
-                            <a href="forget-password.html" class="link">Forgot Password</a>
-                        </div> -->
+                        <div class="text-end">
+                            <a href="<?php echo URLROOT; ?>/users/forgot" class="link">Forgot Password</a>
+                        </div>
                     </div>
                     <div class="mb-4">
                         <button type="submit" name="submit" class="btn w-100" onclick="window.location.href='index.html'">Sign

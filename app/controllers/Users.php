@@ -188,4 +188,43 @@
             redirect("users/login");
         }
     }
+
+    public function forgot() {
+        if(isset($_POST['submit'])) {
+            $email = $_POST['email'];
+            $res = $this->userModel->getUserByEmail($email);
+            if(!empty($res)) {
+                $token = md5(uniqid() . $email);
+                $this->userModel->updatePassToken($res->id, $token);
+                $body = "You have requested to reset your password. Please click the link below to reset password:<br><br>";
+                $body .= "<a href='" . URLROOT . "/users/reset/$token'>Reset password</a>";
+                sendMail($email, $res->name, "Reset password", $body);
+                flash("email_sent", "Please check your mailbox!");
+                redirect("users/login");
+            } else {
+                flash("email_not_found", "Email not found!", "errorMsg");
+                redirect("users/forgot");
+                }
+        } else {
+            $this->view("users/forgot", ["title" => "Forgot Password"]);
+        }
+    }
+
+    public function reset($token) {
+        if (isset($_POST['submit'])) {
+            $password = $_POST['password'];
+            $password = password_hash($password, PASSWORD_BCRYPT);
+            $res = $this->userModel->getUserByToken($token);
+            if (!empty($res)) {
+                $this->userModel->updatePassword($res->id, $password);
+                flash("password_reset", "Password has been reset!");
+                redirect("users/login");
+            } else {
+                flash("token_not_found", "Invalid token", "errorMsg");
+                redirect("users/login");
+            }
+        } else {
+            $this->view("users/reset", ["title" => "Reset Password"]);
+        }
+    }
   }
