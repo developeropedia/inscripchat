@@ -26,7 +26,7 @@
 
       if($action === "add_comment") {
 
-        if(!$this->groupsModel->isGroupMember($_SESSION['user_id'], $_POST['groupID'])) {
+        if(!isset($_POST['post']) && !$this->groupsModel->isGroupMember($_SESSION['user_id'], $_POST['groupID'])) {
           echo "not_member";
           die();
         }
@@ -48,7 +48,7 @@
         $action = $_POST['action'];
 
         if ($action === "add_reply") {
-            if (!$this->groupsModel->isGroupMember($_SESSION['user_id'], $_POST['groupID'])) {
+            if (!isset($_POST['post']) &&  !$this->groupsModel->isGroupMember($_SESSION['user_id'], $_POST['groupID'])) {
               echo "not_member";
               die();
             }
@@ -71,7 +71,7 @@
       $action = $_POST['action'];
 
       if ($action === "like_comment") {
-        if (!$this->groupsModel->isGroupMember($_SESSION['user_id'], $_POST['groupID'])) {
+        if (!isset($_POST['post']) &&  !$this->groupsModel->isGroupMember($_SESSION['user_id'], $_POST['groupID'])) {
           echo "not_member";
           die();
         }
@@ -93,7 +93,7 @@
       $action = $_POST['action'];
 
       if ($action === "like_reply") {
-        if (!$this->groupsModel->isGroupMember($_SESSION['user_id'], $_POST['groupID'])) {
+        if (!isset($_POST['post']) &&  !$this->groupsModel->isGroupMember($_SESSION['user_id'], $_POST['groupID'])) {
           echo "not_member";
           die();
         }
@@ -106,8 +106,52 @@
         if ($res) {
           echo json_encode(["result" => true, "likes" => $res->likes, "dislikes" => $res->dislikes]);
         } else {
-          echo json_encode(["result" => false]);
+          echo json_encode(["result" => false]); 
         }
+      }
+    }
+
+    public function checkNewComments() {
+      $group_id = $_POST['groupID'];
+      $lastCommentTime = $_POST['lastCommentTime'];
+      $res = $this->commentsModel->checkNewComments($group_id, $lastCommentTime);
+      if ($res) {
+        echo json_encode(["result" => true, "comments" => $res]);
+      } else {
+        echo json_encode(["result" => false]);
+      }
+    }
+
+    public function checkNewCommentsPost() {
+      $post_id = $_POST['post_id'];
+      $lastCommentTime = $_POST['lastCommentTime'];
+      $res = $this->commentsModel->checkNewCommentsPost($post_id, $lastCommentTime);
+      if ($res) {
+        echo json_encode(["result" => true, "comments" => $res]);
+      } else {
+        echo json_encode(["result" => false]);
+      }
+    }
+
+    public function checkNewReplies() {
+      $group_id = $_POST['groupID'];
+      $lastReplyTime = $_POST['lastReplyTime'];
+      $res = $this->commentsModel->checkNewReplies($group_id, $lastReplyTime);
+      if ($res) {
+        echo json_encode(["result" => true, "replies" => $res]);
+      } else {
+        echo json_encode(["result" => false]);
+      }
+    }
+
+    public function checkNewRepliesPost() {
+      $post_id = $_POST['post_id'];
+      $lastReplyTime = $_POST['lastReplyTime'];
+      $res = $this->commentsModel->checkNewRepliesPost($post_id, $lastReplyTime);
+      if ($res) {
+        echo json_encode(["result" => true, "replies" => $res]);
+      } else {
+        echo json_encode(["result" => false]);
       }
     }
   }

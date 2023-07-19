@@ -251,7 +251,7 @@ $results = $data["results"];
                         </div>
                     <?php endforeach; ?>
                 <?php else : ?>
-                    <p class="no-peer">You don't have added any peer</p>
+                    <p class="no-peer">You don't have any peers to add to the Group</p>
                 <?php endif; ?>
             </div>
             <div class="modal-footer d-flex justify-content-center">

@@ -27,6 +27,7 @@ $courses = $course->getCourses();
                     <div class="col-lg-12">
                         <div class="d-flex flex-column align-items-center justify-content-center h-100">
                             <p class="mb-0"><img class="setting-dp " src="<?php echo URLROOT; ?>/public/images/male.webp" id="output" /></p>
+                            <small class="mt-1" id="imgError"></small>
                             <p class="mb-0">
                                 <input type="file" accept="image/*" name="image" id="file" onchange="loadFile(event)" style="display: none;">
                             </p>
@@ -122,4 +123,23 @@ $courses = $course->getCourses();
             var image = document.getElementById('output');
             image.src = URL.createObjectURL(event.target.files[0]);
         };
+    </script>
+
+    <script>
+        const appURL = "<?php echo URLROOT; ?>";
+        $(document).ready(function() {
+            $('#file').on('change', function() {
+                var file = this.files[0];
+                var maxSize = 1024 * 1024; // 1MB
+                if (file.size > maxSize) {
+                    $("#output").attr("src", appURL + "/public/images/male.webp")
+                    $("#imgError").addClass("text-danger")
+                    $('#imgError').text('The uploaded image should be less than 1MB in size.');
+                    $(this).val(''); // Remove the selected file from the input
+                } else {
+                    $("#imgError").removeClass("text-danger")
+                    $('#imgError').text(''); // Clear any previous error message
+                }
+            });
+        });
     </script>

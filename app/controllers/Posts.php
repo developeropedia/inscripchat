@@ -73,7 +73,7 @@
       $action = $_POST['action'];
 
       if ($action === "like_post") {
-        if (!$this->groupsModel->isGroupMember($_SESSION['user_id'], $_POST['groupID'])) {
+        if (!isset($_POST['post']) &&  !$this->groupsModel->isGroupMember($_SESSION['user_id'], $_POST['groupID'])) {
           echo "not_member";
           die();
         }

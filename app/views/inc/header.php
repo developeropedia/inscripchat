@@ -22,6 +22,7 @@ $userObj2->deleteOfflineUsers();
     <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
     <link href="https://emoji-css.afeld.me/emoji.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="<?php echo URLROOT; ?>/public/images/favicon.png">
     <title><?php echo $data["title"]; ?></title>
 
     <script>

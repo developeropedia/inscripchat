@@ -12,6 +12,9 @@ $user = $data["user"];
 
 $commentObj = new Comment;
 
+$lastCommentTime = '1970-01-01 12:00:00';
+$lastReplyTime = '1970-01-01 12:00:00';
+
 ?>
 
 <main>
@@ -196,8 +199,12 @@ $commentObj = new Comment;
                                 $comment_likes_dislikes = $commentObj->getCommentLikesDislikes($comment->id);
                                 $comment_likes = $comment_likes_dislikes->likes;
                                 $comment_dislikes = $comment_likes_dislikes->dislikes;
+
+                                if ($comment->created_at > $lastCommentTime) {
+                                    $lastCommentTime = $comment->created_at;
+                                }
                                 ?>
-                                <div class="comment-box mt-4 mb-4">
+                                <div class="comment-box mt-4 mb-4 comment-no-<?php echo $comment->id; ?>">
                                     <div class="comment">
                                         <div class="comment-dp">
                                             <img src="<?php echo URLROOT; ?>/public/images/<?php echo $comment->img; ?>" alt="Profile image" class="">
@@ -238,7 +245,7 @@ $commentObj = new Comment;
                                                 <!-- <i id="" style="color: #989898; cursor: pointer;" class="bi bi-emoji-smile emojiBtnCommentReply emoji-reply d-none"></i> -->
                                                 <i data-post-id="<?php echo $postMain->id; ?>" data-comment-id="<?php echo $comment->id; ?>" class="bi bi-send-fill send-reply d-none"></i>
                                             </div>
-                                            <div class="reply-box">
+                                            <div class="reply-box reply-box-<?php echo $comment->id; ?>">
                                                 <?php $replies = $commentObj->getCommentReplies($comment->id); ?>
                                                 <?php if (!empty($replies)) : ?>
                                                     <?php foreach ($replies as $key => $reply) : ?>
@@ -246,6 +253,10 @@ $commentObj = new Comment;
                                                         $reply_likes_dislikes = $commentObj->getReplyLikesDislikes($reply->id);
                                                         $reply_likes = $reply_likes_dislikes->likes;
                                                         $reply_dislikes = $reply_likes_dislikes->dislikes;
+
+                                                        if ($reply->created_at > $lastReplyTime) {
+                                                            $lastReplyTime = $reply->created_at;
+                                                        }
                                                         ?>
                                                         <div class="reply mt-2">
                                                             <div class="reply-dp">
@@ -398,7 +409,7 @@ $commentObj = new Comment;
                         </div>
                     <?php endforeach; ?>
                 <?php else : ?>
-                    <p class="no-peer">You don't have added any peer</p>
+                    <p class="no-peer">You don't have any peers to add to the Group</p>
                 <?php endif; ?>
             </div>
             <div class="modal-footer d-flex justify-content-center">
@@ -449,7 +460,7 @@ include APPROOT . "/views/inc/footer.php";
 
 <!-- Comment template -->
 <script id="comment-template" type="text/template">
-    <div class="comment-box mt-4 mb-4">
+    <div class="comment-box mt-4 mb-4  comment-no-{comment_id}">
         <div class="comment">
             <div class="comment-dp">
                 <img src="<?php echo URLROOT; ?>/public/images/{image}" alt="" class="">
@@ -558,7 +569,7 @@ include APPROOT . "/views/inc/footer.php";
                     </div>
                     <i data-post-id="{post_id}" data-comment-id="{comment_id}" class="bi bi-send-fill send-reply d-none"></i>
                 </div>
-                <div class="reply-box"></div>
+                <div class="reply-box reply-box-{comment_id}"></div>
             </div>
         </div>
     </div>
@@ -704,6 +715,8 @@ include APPROOT . "/views/inc/footer.php";
 <script>
     var post_id = $("#post-id").val();
     const appURL = "<?php echo URLROOT; ?>";
+    var lastCommentTime = "<?php echo $lastCommentTime; ?>";
+    var lastReplyTime = "<?php echo $lastReplyTime; ?>";
 
     $("#comment").keypress(function(event) {
 
@@ -731,10 +744,11 @@ include APPROOT . "/views/inc/footer.php";
             data: {
                 action: "add_comment",
                 postID,
-                comment
+                comment,
+                post: true,
             },
             success: function(response) {
-                console.log(response);
+                // console.log(response);
                 response = JSON.parse(response)
 
                 if (response.result !== "error") {
@@ -795,10 +809,11 @@ include APPROOT . "/views/inc/footer.php";
                 action: "add_reply",
                 postID,
                 commentID,
-                reply
+                reply,
+                post: true,
             },
             success: function(response) {
-                console.log(response);
+                // console.log(response);
                 response = JSON.parse(response)
 
                 if (response.result !== "error") {
@@ -866,7 +881,8 @@ include APPROOT . "/views/inc/footer.php";
             data: {
                 action: "like_post",
                 post_id,
-                like_dislike
+                like_dislike,
+                post: true
             },
             success: function(response) {
                 response = JSON.parse(response);
@@ -898,7 +914,8 @@ include APPROOT . "/views/inc/footer.php";
             data: {
                 action: "like_comment",
                 commentID,
-                like_dislike
+                like_dislike,
+                post: true
             },
             success: function(response) {
                 console.log(response);
@@ -931,7 +948,8 @@ include APPROOT . "/views/inc/footer.php";
             data: {
                 action: "like_reply",
                 replyID,
-                like_dislike
+                like_dislike,
+                post: true
             },
             success: function(response) {
                 console.log(response);
@@ -1000,4 +1018,110 @@ include APPROOT . "/views/inc/footer.php";
             }
         })
     })
+
+    // Check new comments
+    setInterval(function() {
+        $.ajax({
+            url: appURL + "/comments/checkNewCommentsPost",
+            method: "POST",
+            data: {
+                action: "check_new_comments",
+                post_id,
+                lastCommentTime
+            },
+            success: function(response) {
+                // console.log(response);
+                response = JSON.parse(response)
+                if (response.result) {
+                    response.comments.forEach(comment => {
+                        if (comment.created_at > lastCommentTime) {
+                            lastCommentTime = comment.created_at;
+                        }
+                        // console.log(comment);
+                        // return;
+
+                        var username = comment.username;
+                        var img = comment.img;
+                        var commentID = comment.id;
+
+                        const commentTemplate = $("#comment-template").html();
+                        var html = commentTemplate
+                            .replace("{comment}", comment.comment)
+                            .replace("{username}", comment.username)
+                            .replace("{image}", comment.img)
+                            .replaceAll("{post_id}", comment.postID)
+                            .replaceAll("{comment_id}", commentID);
+                        $(".comments-container").prepend(html)
+
+
+                        const emojiDashboard = $('.emoji-dashboard');
+                        const rightArrow = $('.right-arrow');
+                        emojiDashboard.removeClass('emoji-display');
+                        rightArrow.removeClass('emoji-display');
+                    })
+                }
+            }
+        })
+    }, 1000);
+
+    // Check new replies
+    var replyIds = []
+    setInterval(function() {
+        $.ajax({
+            url: appURL + "/comments/checkNewRepliesPost",
+            method: "POST",
+            data: {
+                action: "check_new_replies",
+                post_id,
+                lastReplyTime
+            },
+            success: function(response) {
+                // console.log(response);
+                response = JSON.parse(response)
+                if (response.result) {
+                    // console.log(response.replies.length);
+                    response.replies.forEach(reply => {
+                        if (replyIds.includes(reply.id)) {
+                            return;
+                        } else {
+                            replyIds.push(reply.id)
+                        }
+                        if (reply.created_at > lastReplyTime) {
+                            lastReplyTime = reply.created_at;
+                        }
+                        // console.log(reply);
+                        // return;
+
+                        // var postElement = $(".post-no-" + reply.postID);
+                        var replyBox = $(".reply-box-" + reply.commentID);
+
+                        var username = reply.username;
+                        var img = reply.img;
+                        var replyID = reply.id;
+
+                        const replyTemplate = $("#reply-template").html();
+                        var html = replyTemplate
+                            .replace("{reply}", reply.reply)
+                            .replace("{name}", reply.username)
+                            .replace("{username}", reply.username)
+                            .replace("{image}", reply.img)
+                            .replaceAll("{post_id}", reply.postID)
+                            .replaceAll("{comment_id}", reply.commentID)
+                            .replaceAll("{reply_id}", reply.id);
+                        replyBox.append(html);
+
+
+                        const emojiDashboard = $('.emoji-dashboard');
+                        const rightArrow = $('.right-arrow');
+                        emojiDashboard.removeClass('emoji-display');
+                        rightArrow.removeClass('emoji-display');
+
+                        $(".comments-container").markRegExp(/@(\w+)/g, {
+                            className: "highlight"
+                        });
+                    })
+                }
+            }
+        })
+    }, 1000);
 </script>

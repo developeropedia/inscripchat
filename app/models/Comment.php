@@ -178,4 +178,78 @@
         $this->db->bind(":reply_id", $reply_id);
         return $this->db->single();
     }
+
+    public function checkNewComments($group_id, $lastCommentTime) {
+        $query = "SELECT c.*, p.id AS postID, u.username, u.img
+        FROM post_comments c
+        INNER JOIN posts p ON c.post_id = p.id
+        INNER JOIN users u ON c.user_id = u.id
+        WHERE c.created_at > :lastCommentTime
+        AND c.user_id != :user_id AND p.group_id = :group_id;
+        ";
+
+        $this->db->query($query);
+        $this->db->bind(":group_id", $group_id);
+        $this->db->bind(":user_id", $_SESSION['user_id']);
+        $this->db->bind(":lastCommentTime", $lastCommentTime);
+        $comments = $this->db->resultSet();
+
+        return $comments;
+    }
+
+    public function checkNewCommentsPost($post_id, $lastCommentTime) {
+        $query = "SELECT c.*, p.id AS postID, u.username, u.img
+        FROM post_comments c
+        INNER JOIN posts p ON c.post_id = p.id
+        INNER JOIN users u ON c.user_id = u.id
+        WHERE c.created_at > :lastCommentTime
+        AND c.user_id != :user_id AND c.post_id = :post_id;
+        ";
+
+        $this->db->query($query);
+        $this->db->bind(":post_id", $post_id);
+        $this->db->bind(":user_id", $_SESSION['user_id']);
+        $this->db->bind(":lastCommentTime", $lastCommentTime);
+        $comments = $this->db->resultSet();
+
+        return $comments;
+    }
+
+    public function checkNewReplies($group_id, $lastReplyTime) {
+        $query = "SELECT r.*, p.id AS postID, c.id AS commentID, u.username, u.img
+        FROM comment_replies r
+        INNER JOIN post_comments c ON r.comment_id = c.id
+        INNER JOIN posts p ON c.post_id = p.id
+        INNER JOIN users u ON r.user_id = u.id
+        WHERE r.created_at > :lastReplyTime
+        AND r.user_id != :user_id AND p.group_id = :group_id;
+        ";
+
+        $this->db->query($query);
+        $this->db->bind(":group_id", $group_id);
+        $this->db->bind(":user_id", $_SESSION['user_id']);
+        $this->db->bind(":lastReplyTime", $lastReplyTime);
+        $replies = $this->db->resultSet();
+
+        return $replies;
+    }
+
+    public function checkNewRepliesPost($post_id, $lastReplyTime) {
+        $query = "SELECT r.*, p.id AS postID, c.id AS commentID, u.username, u.img
+        FROM comment_replies r
+        INNER JOIN post_comments c ON r.comment_id = c.id
+        INNER JOIN posts p ON c.post_id = p.id
+        INNER JOIN users u ON r.user_id = u.id
+        WHERE r.created_at > :lastReplyTime
+        AND r.user_id != :user_id AND c.post_id = :post_id;
+        ";
+
+        $this->db->query($query);
+        $this->db->bind(":post_id", $post_id);
+        $this->db->bind(":user_id", $_SESSION['user_id']);
+        $this->db->bind(":lastReplyTime", $lastReplyTime);
+        $replies = $this->db->resultSet();
+
+        return $replies;
+    }
   }
